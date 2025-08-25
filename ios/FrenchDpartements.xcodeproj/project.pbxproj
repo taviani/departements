@@ -7,29 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02FBCBDAC89D131574A25CB3 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC16BDABFD076BF00E67A7 /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		1A27852D5A9C0B27E2BA84A3 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD17B4C7095CDD68B51DF8D /* ExpoModulesProvider.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		574D5873DF6FF818BCEC6ECA /* libPods-FrenchDpartements.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D58F84A416F66E668D918553 /* libPods-FrenchDpartements.a */; };
+		8B855EB61170A2DB1D7AB9E4 /* libPods-FrenchDpartements.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6ED1AA5CF233FE9318219D3 /* libPods-FrenchDpartements.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		D5DEEFA863C4C89D4B30927C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		F6C221A98599099E8B448761 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C233748206555CBBB1631357 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0AD17B4C7095CDD68B51DF8D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-FrenchDpartements/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = FrenchDpartements/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* FrenchDpartements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FrenchDpartements.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FrenchDpartements/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FrenchDpartements/Info.plist; sourceTree = "<group>"; };
-		2936B6418029D0AB9966D405 /* Pods-FrenchDpartements.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrenchDpartements.debug.xcconfig"; path = "Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements.debug.xcconfig"; sourceTree = "<group>"; };
+		59BC16BDABFD076BF00E67A7 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-FrenchDpartements/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		6A5E3C047A3370D2412BDB5E /* Pods-FrenchDpartements.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrenchDpartements.debug.xcconfig"; path = "Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = FrenchDpartements/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B7FA881226707998697E8082 /* Pods-FrenchDpartements.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrenchDpartements.release.xcconfig"; path = "Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements.release.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C233748206555CBBB1631357 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = FrenchDpartements/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		D58F84A416F66E668D918553 /* libPods-FrenchDpartements.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FrenchDpartements.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F0A0AEED833B8989022A0CAB /* Pods-FrenchDpartements.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrenchDpartements.release.xcconfig"; path = "Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements.release.xcconfig"; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = FrenchDpartements/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* FrenchDpartements-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "FrenchDpartements-Bridging-Header.h"; path = "FrenchDpartements/FrenchDpartements-Bridging-Header.h"; sourceTree = "<group>"; };
+		F6ED1AA5CF233FE9318219D3 /* libPods-FrenchDpartements.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FrenchDpartements.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				574D5873DF6FF818BCEC6ECA /* libPods-FrenchDpartements.a in Frameworks */,
+				8B855EB61170A2DB1D7AB9E4 /* libPods-FrenchDpartements.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,36 +53,26 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				C233748206555CBBB1631357 /* PrivacyInfo.xcprivacy */,
+				03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */,
 			);
 			name = FrenchDpartements;
-			sourceTree = "<group>";
-		};
-		1833118DC18338EAD5194C9D /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				2936B6418029D0AB9966D405 /* Pods-FrenchDpartements.debug.xcconfig */,
-				B7FA881226707998697E8082 /* Pods-FrenchDpartements.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				D58F84A416F66E668D918553 /* libPods-FrenchDpartements.a */,
+				F6ED1AA5CF233FE9318219D3 /* libPods-FrenchDpartements.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		40A5A417DBAD677A3CBAD15F /* FrenchDpartements */ = {
+		6AD91FA5CE6F32A7D9A7ECCE /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				0AD17B4C7095CDD68B51DF8D /* ExpoModulesProvider.swift */,
+				946EA5D03ADA2A85864AD11F /* FrenchDpartements */,
 			);
-			name = FrenchDpartements;
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -99,8 +89,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				1833118DC18338EAD5194C9D /* Pods */,
-				E74E97A1C7DFCCE840D74A39 /* ExpoModulesProviders */,
+				93C084849C677FF07C46CBA2 /* Pods */,
+				6AD91FA5CE6F32A7D9A7ECCE /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -115,6 +105,24 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		93C084849C677FF07C46CBA2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6A5E3C047A3370D2412BDB5E /* Pods-FrenchDpartements.debug.xcconfig */,
+				F0A0AEED833B8989022A0CAB /* Pods-FrenchDpartements.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		946EA5D03ADA2A85864AD11F /* FrenchDpartements */ = {
+			isa = PBXGroup;
+			children = (
+				59BC16BDABFD076BF00E67A7 /* ExpoModulesProvider.swift */,
+			);
+			name = FrenchDpartements;
+			sourceTree = "<group>";
+		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,14 +130,6 @@
 			);
 			name = Supporting;
 			path = FrenchDpartements/Supporting;
-			sourceTree = "<group>";
-		};
-		E74E97A1C7DFCCE840D74A39 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				40A5A417DBAD677A3CBAD15F /* FrenchDpartements */,
-			);
-			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FrenchDpartements" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				C1CDA665C92F087B0AC3717B /* [Expo] Configure project */,
+				CAC470CA201D9B3C00572B98 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				8D7EEA8BC851F9306AE5E035 /* [CP] Embed Pods Frameworks */,
+				48C4B774DC6168C841FC1A00 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				F6C221A98599099E8B448761 /* PrivacyInfo.xcprivacy in Resources */,
+				D5DEEFA863C4C89D4B30927C /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +240,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		48C4B774DC6168C841FC1A00 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -276,25 +294,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8D7EEA8BC851F9306AE5E035 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C1CDA665C92F087B0AC3717B /* [Expo] Configure project */ = {
+		CAC470CA201D9B3C00572B98 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -321,7 +321,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				1A27852D5A9C0B27E2BA84A3 /* ExpoModulesProvider.swift in Sources */,
+				02FBCBDAC89D131574A25CB3 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,7 +330,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2936B6418029D0AB9966D405 /* Pods-FrenchDpartements.debug.xcconfig */;
+			baseConfigurationReference = 6A5E3C047A3370D2412BDB5E /* Pods-FrenchDpartements.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -366,7 +366,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B7FA881226707998697E8082 /* Pods-FrenchDpartements.release.xcconfig */;
+			baseConfigurationReference = F0A0AEED833B8989022A0CAB /* Pods-FrenchDpartements.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
