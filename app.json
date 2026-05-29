@@ -8,15 +8,19 @@
     "userInterfaceStyle": "light",
     "scheme": "french-departements",
     "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "resizeMode": "contain"
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.frenchdepartements.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocalNetworkUsageDescription": "This app needs access to your local network to connect to the development server.",
+        "NSBonjourServices": [
+          "_expo._tcp",
+          "_http._tcp"
+        ]
       }
     },
     "android": {
@@ -29,6 +33,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      "expo-dev-client"
+    ],
     "extra": {
       "eas": {
         "projectId": "868c2992-4abf-4901-9b2a-51534feb3f69"

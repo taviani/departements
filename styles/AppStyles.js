@@ -12,6 +12,19 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+    marginRight: 14,
+  },
+  headerText: {
+    flex: 1,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
