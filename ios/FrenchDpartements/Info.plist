@@ -53,6 +53,13 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_expo._tcp</string>
+      <string>_http._tcp</string>
+    </array>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>This app needs access to your local network to connect to the development server.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
