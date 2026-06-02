@@ -94,10 +94,5 @@
   "92": { "name": "Nanterre", "lat": 48.892, "lon": 2.207 },
   "93": { "name": "Bobigny", "lat": 48.909, "lon": 2.439 },
   "94": { "name": "Créteil", "lat": 48.790, "lon": 2.456 },
-  "95": { "name": "Pontoise", "lat": 49.051, "lon": 2.101 },
-  "971": { "name": "Basse-Terre", "lat": 16.010, "lon": -61.706 },
-  "972": { "name": "Fort-de-France", "lat": 14.616, "lon": -61.059 },
-  "973": { "name": "Cayenne", "lat": 4.922, "lon": -52.313 },
-  "974": { "name": "Saint-Denis", "lat": -20.878, "lon": 55.448 },
-  "976": { "name": "Mamoudzou", "lat": -12.780, "lon": 45.228 }
+  "95": { "name": "Pontoise", "lat": 49.051, "lon": 2.101 }
 }

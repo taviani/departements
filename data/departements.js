@@ -94,11 +94,6 @@ export const departements = [
   { number: '92', name: 'Hauts-de-Seine', region: 'Île-de-France' },
   { number: '93', name: 'Seine-Saint-Denis', region: 'Île-de-France' },
   { number: '94', name: 'Val-de-Marne', region: 'Île-de-France' },
-  { number: '95', name: 'Val-d\'Oise', region: 'Île-de-France' },
-  { number: '971', name: 'Guadeloupe', region: 'Guadeloupe' },
-  { number: '972', name: 'Martinique', region: 'Martinique' },
-  { number: '973', name: 'Guyane', region: 'Guyane' },
-  { number: '974', name: 'La Réunion', region: 'La Réunion' },
-  { number: '976', name: 'Mayotte', region: 'Mayotte' }
+  { number: '95', name: 'Val-d\'Oise', region: 'Île-de-France' }
 ];
 

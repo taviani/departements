@@ -2,13 +2,11 @@ import { departements } from '../../data/departements';
 import getMapData from '../../utils/mapData';
 import prefectures from '../../data/prefectures.json';
 
-const METRO_DEPARTEMENTS = departements.filter(
-  (dept) => !['971', '972', '973', '974', '976'].includes(dept.number)
-);
+const OVERSEAS_CODES = ['971', '972', '973', '974', '976'];
 
 describe('departements data integrity', () => {
-  it('contains 101 French departments', () => {
-    expect(departements).toHaveLength(101);
+  it('contains 96 metropolitan departments', () => {
+    expect(departements).toHaveLength(96);
   });
 
   it('has unique department numbers', () => {
@@ -30,10 +28,9 @@ describe('departements data integrity', () => {
     expect(numbers).toContain('2B');
   });
 
-  it('includes overseas departments', () => {
-    const overseas = ['971', '972', '973', '974', '976'];
-    overseas.forEach((number) => {
-      expect(departements.some((dept) => dept.number === number)).toBe(true);
+  it('does not include overseas departments', () => {
+    OVERSEAS_CODES.forEach((number) => {
+      expect(departements.some((dept) => dept.number === number)).toBe(false);
     });
   });
 });
@@ -49,17 +46,16 @@ describe('map data integrity', () => {
     expect(mapData.departments).toHaveLength(96);
   });
 
-  it('maps every metro department number from the list', () => {
+  it('maps every department number from the list', () => {
     const mapCodes = new Set(mapData.departments.map((dept) => dept.code));
-    METRO_DEPARTEMENTS.forEach((dept) => {
+    departements.forEach((dept) => {
       expect(mapCodes.has(dept.number)).toBe(true);
     });
   });
 
-  it('does not include overseas departments on the metro map', () => {
-    const overseas = ['971', '972', '973', '974', '976'];
+  it('does not include overseas departments on the map', () => {
     const mapCodes = mapData.departments.map((dept) => dept.code);
-    overseas.forEach((code) => {
+    OVERSEAS_CODES.forEach((code) => {
       expect(mapCodes).not.toContain(code);
     });
   });
@@ -76,7 +72,7 @@ describe('map data integrity', () => {
 
   it('matches department names between list and map data', () => {
     const listByNumber = Object.fromEntries(
-      METRO_DEPARTEMENTS.map((dept) => [dept.number, dept.name])
+      departements.map((dept) => [dept.number, dept.name])
     );
 
     mapData.departments.forEach((dept) => {
@@ -88,8 +84,8 @@ describe('map data integrity', () => {
 describe('prefecture data integrity', () => {
   const mapData = getMapData();
 
-  it('has prefecture entries for metropolitan departments', () => {
-    METRO_DEPARTEMENTS.forEach((dept) => {
+  it('has prefecture entries for all departments', () => {
+    departements.forEach((dept) => {
       expect(prefectures[dept.number]).toBeDefined();
       expect(prefectures[dept.number].name.length).toBeGreaterThan(0);
     });

@@ -3,8 +3,8 @@ import { departements } from '../../data/departements';
 
 describe('filterDepartements', () => {
   it('returns all departments for an empty query', () => {
-    expect(filterDepartements(departements, '')).toHaveLength(101);
-    expect(filterDepartements(departements, '   ')).toHaveLength(101);
+    expect(filterDepartements(departements, '')).toHaveLength(96);
+    expect(filterDepartements(departements, '   ')).toHaveLength(96);
   });
 
   it('filters by department number', () => {

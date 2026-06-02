@@ -1,10 +1,10 @@
 # Départements
 
-A React Native (Expo) app to explore the 101 French départements — with an interactive map of metropolitan France, search, and prefecture markers.
+A React Native (Expo) app to explore the 96 metropolitan French départements — with an interactive map, search, and prefecture markers.
 
 ## Features
 
-- **Interactive SVG map** — 96 metropolitan départements with tap-to-select
+- **Interactive SVG map** — all 96 départements with tap-to-select
 - **Zoom** — tap the detail strip to zoom on a département; pinch, pan, and double-tap to reset
 - **Prefecture markers** — city dot on the overview map; readable label with background when zoomed
 - **Search** — filter by département number or name
@@ -12,7 +12,7 @@ A React Native (Expo) app to explore the 101 French départements — with an in
 - **Detail strip** — name, number, and region for the selected département
 - **Animated splash** — logo reveal on launch
 
-The searchable list includes all 101 départements (metro + overseas). The map covers metropolitan France only.
+The list and map both cover metropolitan France (96 départements, including Corsica 2A/2B).
 
 ## Requirements
 
@@ -82,7 +82,7 @@ departements/
 │   ├── FranceMap.js            # SVG map, gestures, prefecture overlay
 │   └── AnimatedSplash.js
 ├── data/
-│   ├── departements.js         # List of 101 départements
+│   ├── departements.js         # List of 96 metropolitan départements
 │   ├── prefectures.json        # Prefecture coordinates (source)
 │   └── *.compressed.js         # Gzip-compressed SVG map (overview + detail)
 ├── scripts/

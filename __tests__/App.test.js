@@ -62,7 +62,7 @@ describe('App QA', () => {
       screen.getByLabelText('Afficher la liste')
     );
 
-    expect(screen.getByText('101 départements')).toBeTruthy();
+    expect(screen.getByText('96 départements')).toBeTruthy();
     expect(screen.getAllByText('Ain').length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText('Aisne')).toBeTruthy();
   });
