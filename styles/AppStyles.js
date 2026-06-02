@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
@@ -57,7 +60,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
   },
-  listToggle: {
+  iconButton: {
     width: 44,
     height: 44,
     borderRadius: 10,
@@ -67,64 +70,78 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-  listToggleActive: {
+  iconButtonActive: {
     backgroundColor: '#2196F3',
   },
-  featuredContainer: {
+  mainContent: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
   },
-  randomButton: {
+  mapContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+    minHeight: 200,
+  },
+  mapContainerCompact: {
+    flex: 0,
+    height: 200,
+    paddingBottom: 4,
+  },
+  detailStrip: {
+    marginHorizontal: 16,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    borderRadius: 28,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'center',
-    gap: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#2196F3',
-    backgroundColor: '#fff',
-    marginBottom: 20,
+    paddingRight: 16,
   },
-  randomButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#2196F3',
-  },
-  featuredCard: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingVertical: 40,
-    paddingHorizontal: 28,
+  detailStripMain: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 4,
+    paddingVertical: 28,
+    paddingLeft: 36,
+    paddingRight: 16,
   },
-  featuredNumber: {
-    fontSize: 64,
+  detailStripNumber: {
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#2196F3',
-    marginBottom: 16,
-  },
-  featuredName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    minWidth: 80,
+    maxWidth: 96,
     textAlign: 'center',
-    marginBottom: 10,
+    marginRight: 20,
   },
-  featuredRegion: {
+  detailStripInfo: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: 'center',
+  },
+  detailStripName: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 6,
+  },
+  detailStripRegion: {
     fontSize: 18,
     color: '#666',
-    textAlign: 'center',
+  },
+  detailStripCloseButton: {
+    width: 56,
+    height: 56,
+    marginRight: 4,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
   },
   list: {
     flex: 1,
@@ -171,62 +188,5 @@ export const styles = StyleSheet.create({
   itemRegion: {
     fontSize: 14,
     color: '#666',
-  },
-  regionLink: {
-    color: '#2196F3',
-  },
-  regionBar: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  regionBackButton: {
-    alignSelf: 'flex-start',
-  },
-  backButton: {
-    marginBottom: 10,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: '#2196F3',
-    fontWeight: '500',
-  },
-  detailContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  detailCard: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  detailNumber: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#2196F3',
-    marginBottom: 15,
-  },
-  detailName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  detailRegion: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
   },
 });

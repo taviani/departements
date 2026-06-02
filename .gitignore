@@ -41,5 +41,9 @@ ios/.xcode.env.local
 # Native build artifacts
 ios/build/
 
+# Raw GeoJSON source (regenerate with npm run build:map-data)
+data/departements.geojson
+data/departements-map.json
+
 # typescript
 *.tsbuildinfo
