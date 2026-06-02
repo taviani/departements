@@ -1,103 +1,118 @@
-# French Départements App
+# Départements
 
-A simple React Native app to search and explore French départements by number or name.
+A React Native (Expo) app to explore the 101 French départements — with an interactive map of metropolitan France, search, and prefecture markers.
 
 ## Features
 
-- 📍 Complete list of all 101 French départements (including overseas territories)
-- 🔍 Search by département number, name, or region
-- 📱 Clean and intuitive mobile interface
-- 🎯 Tap on any département to see detailed information
-- 🇫🇷 French language interface
+- **Interactive SVG map** — 96 metropolitan départements with tap-to-select
+- **Zoom** — tap the detail strip to zoom on a département; pinch, pan, and double-tap to reset
+- **Prefecture markers** — city dot on the overview map; readable label with background when zoomed
+- **Search** — filter by département number or name
+- **List & shuffle** — browse the full list or pick a random département
+- **Detail strip** — name, number, and region for the selected département
+- **Animated splash** — logo reveal on launch
 
-## Installation & Setup
+The searchable list includes all 101 départements (metro + overseas). The map covers metropolitan France only.
 
-1. Make sure you have Node.js and npm installed
-2. Install Expo CLI globally (if not already installed):
-   ```bash
-   npm install -g @expo/cli
-   ```
+## Requirements
 
-3. Navigate to the project directory:
-   ```bash
-   cd french-departements
-   ```
+- Node.js 20+
+- npm
+- For device testing: [Expo dev client](https://docs.expo.dev/develop/development-builds/introduction/) (this project uses native modules — Expo Go is not supported)
 
-4. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-## Running the App
-
-### Development Mode
+## Setup
 
 ```bash
-npm start
+git clone https://github.com/taviani/departements.git
+cd departements
+npm install
 ```
 
-This will open the Expo developer tools. You can then:
-- Scan the QR code with the Expo Go app on your phone
-- Press `i` to run on iOS simulator
-- Press `a` to run on Android emulator
-- Press `w` to run in web browser
-
-### Platform-specific commands
+Map geometry is shipped as compressed SVG data. To regenerate it from GeoJSON:
 
 ```bash
-# iOS
-npm run ios
+npm run build:map-data
+```
 
-# Android  
+## Development
+
+```bash
+# Start Metro (generates map data if missing)
+npm start
+
+# Run on a connected device or simulator (dev client)
+npm run ios
 npm run android
 
 # Web
 npm run web
 ```
 
-## Usage
+With Metro running, open the app in your dev client build. For a physical iPhone over the network, use a tunnel:
 
-1. **Browse**: Scroll through the complete list of French départements
-2. **Search**: Use the search bar to find départements by:
-   - Number (e.g., "75" for Paris)
-   - Name (e.g., "Seine" to find all départements containing "Seine")
-   - Region (e.g., "Bretagne" to find all départements in Brittany)
-3. **View Details**: Tap on any département to see its detailed information
-4. **Navigate Back**: Use the "Retour" button to return to the main list
+```bash
+npx expo start --dev-client --tunnel
+```
 
-## Data Structure
+## Testing
 
-Each département contains:
-- `number`: Official département number (e.g., "75", "2A")
-- `name`: Official département name
-- `region`: The région it belongs to
+```bash
+npm test
+npm run test:watch
+```
 
-## Project Structure
+Tests run on every push and pull request to `main` via [GitHub Actions](.github/workflows/ci.yml).
+
+## Production builds
+
+Store builds use [EAS](https://docs.expo.dev/build/introduction/):
+
+```bash
+npm run build:ios
+npm run build:android
+npm run build:all
+```
+
+## Project structure
 
 ```
-french-departements/
-├── App.js                 # Main app component
+departements/
+├── App.js                      # Main screen: search, list, map, detail strip
+├── components/
+│   ├── FranceMap.js            # SVG map, gestures, prefecture overlay
+│   └── AnimatedSplash.js
 ├── data/
-│   └── departements.js    # Complete list of French départements
-├── package.json
-└── README.md
+│   ├── departements.js         # List of 101 départements
+│   ├── prefectures.json        # Prefecture coordinates (source)
+│   └── *.compressed.js         # Gzip-compressed SVG map (overview + detail)
+├── scripts/
+│   ├── build-map-data.js       # GeoJSON → compressed map tiers
+│   └── ensure-map-data.js      # Auto-build map data if missing
+├── utils/                      # Map math, projection, search, loaders
+├── __tests__/                  # Jest test suites
+└── .github/workflows/ci.yml    # CI
 ```
 
-## Technologies Used
+## Map data
 
-- **React Native**: Mobile app framework
-- **Expo**: Development platform and tools
-- **JavaScript**: Programming language
+The map uses a two-tier SVG pipeline to keep the app lightweight while staying sharp when zoomed:
 
-## Contributing
+| Tier | File | Purpose |
+|------|------|---------|
+| Overview | `departements-map.compressed.js` | Simplified paths, bundled at startup |
+| Detail | `departements-map-detail.compressed.js` | High-resolution path for the selected département, lazy-loaded on zoom |
 
-Feel free to contribute by:
-- Adding new features
-- Improving the UI/UX  
-- Fixing bugs
-- Adding tests
+Camera zoom is implemented with a fixed SVG `viewBox` and a `<G transform>` (reliable on iOS), not dynamic viewBox changes.
+
+Raw `departements.geojson` is gitignored; run `npm run build:map-data` to fetch and rebuild.
+
+## Technologies
+
+- **Expo 53** + **React Native 0.79**
+- **react-native-svg** — vector map
+- **react-native-gesture-handler** + **Reanimated** — pinch/pan
+- **Jest** + **Testing Library** — unit and component tests
 
 ## License
 
-This project is open source and available under the MIT License.
-
+MIT
