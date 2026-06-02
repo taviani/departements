@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "FrenchDpartements.app"
-               BlueprintName = "FrenchDpartements"
-               ReferencedContainer = "container:FrenchDpartements.xcodeproj">
+               BuildableName = "Departements.app"
+               BlueprintName = "Departements"
+               ReferencedContainer = "container:Departements.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "FrenchDpartementsTests.xctest"
-               BlueprintName = "FrenchDpartementsTests"
-               ReferencedContainer = "container:FrenchDpartements.xcodeproj">
+               BuildableName = "DepartementsTests.xctest"
+               BlueprintName = "DepartementsTests"
+               ReferencedContainer = "container:Departements.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "FrenchDpartements.app"
-            BlueprintName = "FrenchDpartements"
-            ReferencedContainer = "container:FrenchDpartements.xcodeproj">
+            BuildableName = "Departements.app"
+            BlueprintName = "Departements"
+            ReferencedContainer = "container:Departements.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "FrenchDpartements.app"
-            BlueprintName = "FrenchDpartements"
-            ReferencedContainer = "container:FrenchDpartements.xcodeproj">
+            BuildableName = "Departements.app"
+            BlueprintName = "Departements"
+            ReferencedContainer = "container:Departements.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

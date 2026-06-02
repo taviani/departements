@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "French Départements",
+    "name": "Departements",
     "slug": "french-departements",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,29 +13,18 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.frenchdepartements.app",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false,
-        "NSLocalNetworkUsageDescription": "This app needs access to your local network to connect to the development server.",
-        "NSBonjourServices": [
-          "_expo._tcp",
-          "_http._tcp"
-        ]
-      }
+      "bundleIdentifier": "com.departements.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.frenchdepartements.app"
+      "package": "com.departements.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-dev-client"
-    ],
     "extra": {
       "eas": {
         "projectId": "868c2992-4abf-4901-9b2a-51534feb3f69"

@@ -10,26 +10,26 @@
 		02FBCBDAC89D131574A25CB3 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC16BDABFD076BF00E67A7 /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		8B855EB61170A2DB1D7AB9E4 /* libPods-FrenchDpartements.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6ED1AA5CF233FE9318219D3 /* libPods-FrenchDpartements.a */; };
+		8B855EB61170A2DB1D7AB9E4 /* libPods-Departements.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6ED1AA5CF233FE9318219D3 /* libPods-Departements.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		D5DEEFA863C4C89D4B30927C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = FrenchDpartements/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* FrenchDpartements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FrenchDpartements.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FrenchDpartements/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FrenchDpartements/Info.plist; sourceTree = "<group>"; };
-		59BC16BDABFD076BF00E67A7 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-FrenchDpartements/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		6A5E3C047A3370D2412BDB5E /* Pods-FrenchDpartements.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrenchDpartements.debug.xcconfig"; path = "Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements.debug.xcconfig"; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = FrenchDpartements/SplashScreen.storyboard; sourceTree = "<group>"; };
+		03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Departements/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* Departements.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Departements.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Departements/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Departements/Info.plist; sourceTree = "<group>"; };
+		59BC16BDABFD076BF00E67A7 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Departements/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		6A5E3C047A3370D2412BDB5E /* Pods-Departements.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Departements.debug.xcconfig"; path = "Target Support Files/Pods-Departements/Pods-Departements.debug.xcconfig"; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Departements/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F0A0AEED833B8989022A0CAB /* Pods-FrenchDpartements.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FrenchDpartements.release.xcconfig"; path = "Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements.release.xcconfig"; sourceTree = "<group>"; };
-		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = FrenchDpartements/AppDelegate.swift; sourceTree = "<group>"; };
-		F11748442D0722820044C1D9 /* FrenchDpartements-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "FrenchDpartements-Bridging-Header.h"; path = "FrenchDpartements/FrenchDpartements-Bridging-Header.h"; sourceTree = "<group>"; };
-		F6ED1AA5CF233FE9318219D3 /* libPods-FrenchDpartements.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FrenchDpartements.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0A0AEED833B8989022A0CAB /* Pods-Departements.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Departements.release.xcconfig"; path = "Target Support Files/Pods-Departements/Pods-Departements.release.xcconfig"; sourceTree = "<group>"; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Departements/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* Departements-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Departements-Bridging-Header.h"; path = "Departements/Departements-Bridging-Header.h"; sourceTree = "<group>"; };
+		F6ED1AA5CF233FE9318219D3 /* libPods-Departements.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Departements.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,32 +37,32 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B855EB61170A2DB1D7AB9E4 /* libPods-FrenchDpartements.a in Frameworks */,
+				8B855EB61170A2DB1D7AB9E4 /* libPods-Departements.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* FrenchDpartements */ = {
+		13B07FAE1A68108700A75B9A /* Departements */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
-				F11748442D0722820044C1D9 /* FrenchDpartements-Bridging-Header.h */,
+				F11748442D0722820044C1D9 /* Departements-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */,
 			);
-			name = FrenchDpartements;
+			name = Departements;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				F6ED1AA5CF233FE9318219D3 /* libPods-FrenchDpartements.a */,
+				F6ED1AA5CF233FE9318219D3 /* libPods-Departements.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -70,7 +70,7 @@
 		6AD91FA5CE6F32A7D9A7ECCE /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				946EA5D03ADA2A85864AD11F /* FrenchDpartements */,
+				946EA5D03ADA2A85864AD11F /* Departements */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -85,7 +85,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* FrenchDpartements */,
+				13B07FAE1A68108700A75B9A /* Departements */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -100,7 +100,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* FrenchDpartements.app */,
+				13B07F961A680F5B00A75B9A /* Departements.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,18 +108,18 @@
 		93C084849C677FF07C46CBA2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6A5E3C047A3370D2412BDB5E /* Pods-FrenchDpartements.debug.xcconfig */,
-				F0A0AEED833B8989022A0CAB /* Pods-FrenchDpartements.release.xcconfig */,
+				6A5E3C047A3370D2412BDB5E /* Pods-Departements.debug.xcconfig */,
+				F0A0AEED833B8989022A0CAB /* Pods-Departements.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		946EA5D03ADA2A85864AD11F /* FrenchDpartements */ = {
+		946EA5D03ADA2A85864AD11F /* Departements */ = {
 			isa = PBXGroup;
 			children = (
 				59BC16BDABFD076BF00E67A7 /* ExpoModulesProvider.swift */,
 			);
-			name = FrenchDpartements;
+			name = Departements;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -128,15 +128,15 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = FrenchDpartements/Supporting;
+			path = Departements/Supporting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* FrenchDpartements */ = {
+		13B07F861A680F5B00A75B9A /* Departements */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FrenchDpartements" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Departements" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
 				CAC470CA201D9B3C00572B98 /* [Expo] Configure project */,
@@ -151,9 +151,9 @@
 			);
 			dependencies = (
 			);
-			name = FrenchDpartements;
-			productName = FrenchDpartements;
-			productReference = 13B07F961A680F5B00A75B9A /* FrenchDpartements.app */;
+			name = Departements;
+			productName = Departements;
+			productReference = 13B07F961A680F5B00A75B9A /* Departements.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -166,13 +166,11 @@
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 64J4V9D5WK;
 						LastSwiftMigration = 1250;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FrenchDpartements" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Departements" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -185,7 +183,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* FrenchDpartements */,
+				13B07F861A680F5B00A75B9A /* Departements */,
 			);
 		};
 /* End PBXProject section */
@@ -235,7 +233,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-FrenchDpartements-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Departements-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -248,7 +246,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Departements/Pods-Departements-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -257,7 +255,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Departements/Pods-Departements-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
@@ -266,7 +264,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Departements/Pods-Departements-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
@@ -293,7 +291,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FrenchDpartements/Pods-FrenchDpartements-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Departements/Pods-Departements-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CAC470CA201D9B3C00572B98 /* [Expo] Configure project */ = {
@@ -313,7 +311,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-FrenchDpartements/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Departements/expo-configure-project.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -332,21 +330,21 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6A5E3C047A3370D2412BDB5E /* Pods-FrenchDpartements.debug.xcconfig */;
+			baseConfigurationReference = 6A5E3C047A3370D2412BDB5E /* Pods-Departements.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = FrenchDpartements/FrenchDpartements.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Departements/Departements.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 64J4V9D5WK;
+				DEVELOPMENT_TEAM = VZ47A85FYC;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = FrenchDpartements/Info.plist;
+				INFOPLIST_FILE = Departements/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -360,8 +358,9 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.frenchdepartements.app;
-				PRODUCT_NAME = FrenchDpartements;
-				SWIFT_OBJC_BRIDGING_HEADER = "FrenchDpartements/FrenchDpartements-Bridging-Header.h";
+				PRODUCT_NAME = Departements;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Departements/Departements-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -371,16 +370,16 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F0A0AEED833B8989022A0CAB /* Pods-FrenchDpartements.release.xcconfig */;
+			baseConfigurationReference = F0A0AEED833B8989022A0CAB /* Pods-Departements.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = FrenchDpartements/FrenchDpartements.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Departements/Departements.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 64J4V9D5WK;
-				INFOPLIST_FILE = FrenchDpartements/Info.plist;
+				DEVELOPMENT_TEAM = VZ47A85FYC;
+				INFOPLIST_FILE = Departements/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -394,8 +393,9 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.frenchdepartements.app;
-				PRODUCT_NAME = FrenchDpartements;
-				SWIFT_OBJC_BRIDGING_HEADER = "FrenchDpartements/FrenchDpartements-Bridging-Header.h";
+				PRODUCT_NAME = Departements;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Departements/Departements-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -460,10 +460,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -522,10 +519,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -538,7 +532,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FrenchDpartements" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Departements" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -547,7 +541,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FrenchDpartements" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Departements" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

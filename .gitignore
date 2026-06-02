@@ -32,6 +32,14 @@ yarn-error.*
 
 # local env files
 .env*.local
+google-play-service-account.json
+ios/.xcode.env.local
+
+# Xcode user-specific data
+**/xcuserdata/
+
+# Native build artifacts
+ios/build/
 
 # typescript
 *.tsbuildinfo
