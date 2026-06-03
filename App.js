@@ -20,6 +20,10 @@ import { filterDepartements } from './utils/departementSearch';
 import { pickRandomDepartement } from './utils/randomDepartement';
 import { styles } from './styles/AppStyles';
 
+const departementsByNumber = Object.fromEntries(
+  departements.map((dept) => [dept.number, dept])
+);
+
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const AppLogo = () => (
@@ -145,6 +149,9 @@ export default function App() {
   };
 
   const handleMapZoomChange = useCallback((zoomed) => {
+    if (isMapZoomedRef.current === zoomed) {
+      return;
+    }
     isMapZoomedRef.current = zoomed;
     setIsMapZoomed(zoomed);
   }, []);
@@ -161,9 +168,9 @@ export default function App() {
     setShowFullList((prev) => !prev);
   };
 
-  const handleMapDepartmentPress = (code) => {
+  const handleMapDepartmentPress = useCallback((code) => {
     Keyboard.dismiss();
-    const departement = departements.find((dept) => dept.number === code);
+    const departement = departementsByNumber[code];
     if (!departement) {
       return;
     }
@@ -173,7 +180,7 @@ export default function App() {
     if (isMapZoomedRef.current) {
       mapRef.current?.zoomToDepartment(departement.number);
     }
-  };
+  }, []);
 
   const mapHighlightedCodes = useMemo(() => {
     if (!isSearchEmpty) {
@@ -248,7 +255,6 @@ export default function App() {
               ref={mapRef}
               selectedCode={selectedDepartement?.number}
               highlightedCodes={mapHighlightedCodes}
-              isMapZoomed={isMapZoomed}
               onDepartmentPress={handleMapDepartmentPress}
               onZoomChange={handleMapZoomChange}
             />

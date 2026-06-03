@@ -2,21 +2,27 @@ import React, {
   forwardRef,
   memo,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { InteractionManager, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
-import Svg, { Path, G, Circle } from 'react-native-svg';
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedProps,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import Svg, { Path, G, Circle, Rect } from 'react-native-svg';
 import { getPrefectureName } from '../data/prefectures.js';
 import getDetailPaths from '../utils/mapDetailData';
 import getMapData from '../utils/mapData';
 import {
   clamp,
-  cameraToTransform,
   clampCameraFocus,
   computeCameraForDepartment,
   computeTransformStrokeWidth,
@@ -29,12 +35,16 @@ import {
 } from '../utils/mapMath';
 import { mapPointToScreen } from '../utils/mapProjection';
 
+const AnimatedG = Animated.createAnimatedComponent(G);
+
 const MIN_SCALE = MIN_MAP_SCALE;
 const MAX_SCALE = MAX_MAP_SCALE;
 const LABEL_CONTAINER_WIDTH = 168;
+const ZOOM_ANIMATION_MS = 280;
+const ZOOM_EPSILON = 0.001;
 
 const DepartmentPath = memo(
-  ({ code, fill, path, strokeWidth, onPress }) => (
+  ({ fill, path, strokeWidth }) => (
     <Path
       d={path}
       fill={fill}
@@ -42,11 +52,9 @@ const DepartmentPath = memo(
       strokeWidth={strokeWidth}
       strokeLinejoin="round"
       strokeLinecap="round"
-      onPress={onPress}
     />
   ),
   (prev, next) =>
-    prev.code === next.code &&
     prev.fill === next.fill &&
     prev.path === next.path &&
     prev.strokeWidth === next.strokeWidth
@@ -54,7 +62,23 @@ const DepartmentPath = memo(
 
 DepartmentPath.displayName = 'DepartmentPath';
 
-const PrefectureMarker = ({ dept, strokeScale }) => {
+const HitTarget = memo(
+  ({ dept, onPress }) => (
+    <Rect
+      x={dept.cx - dept.bboxW / 2}
+      y={dept.cy - dept.bboxH / 2}
+      width={dept.bboxW}
+      height={dept.bboxH}
+      fill="transparent"
+      onPress={onPress}
+    />
+  ),
+  (prev, next) => prev.dept.code === next.dept.code && prev.onPress === next.onPress
+);
+
+HitTarget.displayName = 'HitTarget';
+
+const PrefectureMarker = memo(({ dept, strokeScale }) => {
   if (dept.prefectureX == null || dept.prefectureY == null) {
     return null;
   }
@@ -81,9 +105,11 @@ const PrefectureMarker = ({ dept, strokeScale }) => {
       />
     </G>
   );
-};
+});
 
-const PrefectureLabelOverlay = ({ name, position }) => {
+PrefectureMarker.displayName = 'PrefectureMarker';
+
+const PrefectureLabelOverlay = memo(({ name, position }) => {
   if (!name || !position) {
     return null;
   }
@@ -105,14 +131,15 @@ const PrefectureLabelOverlay = ({ name, position }) => {
       </Text>
     </View>
   );
-};
+});
+
+PrefectureLabelOverlay.displayName = 'PrefectureLabelOverlay';
 
 const FranceMap = forwardRef(
   (
     {
       selectedCode,
       highlightedCodes,
-      isMapZoomed,
       onDepartmentPress,
       onZoomChange,
       style,
@@ -123,10 +150,9 @@ const FranceMap = forwardRef(
     const detailLoadedRef = useRef(false);
     const detailPathsRef = useRef(null);
     const cameraRef = useRef(null);
-    const gestureStartRef = useRef(null);
     const layoutRef = useRef({ width: 0, height: 0 });
-    const fullSizeRef = useRef({ width: 2000, height: 2150 });
-    const cameraScaleSV = useSharedValue(1);
+    const isGesturingRef = useRef(false);
+    const isAnimatingRef = useRef(false);
 
     const [camera, setCameraState] = useState(null);
     const [layoutSize, setLayoutSize] = useState({ width: 0, height: 0 });
@@ -144,30 +170,33 @@ const FranceMap = forwardRef(
       [fullViewBox]
     );
 
-    fullSizeRef.current = { width: fullWidth, height: fullHeight };
-
     const defaultCamera = useMemo(
       () => createDefaultCamera(fullWidth, fullHeight),
       [fullWidth, fullHeight]
     );
+
+    const scaleSV = useSharedValue(defaultCamera.scale);
+    const focusXSV = useSharedValue(defaultCamera.focusX);
+    const focusYSV = useSharedValue(defaultCamera.focusY);
+    const layoutWidthSV = useSharedValue(0);
+    const layoutHeightSV = useSharedValue(0);
+    const gestureStartScale = useSharedValue(1);
+    const gestureStartFocusX = useSharedValue(0);
+    const gestureStartFocusY = useSharedValue(0);
 
     if (!cameraRef.current) {
       cameraRef.current = defaultCamera;
     }
 
     const activeCamera = camera ?? defaultCamera;
-
-    const mapTransform = useMemo(
-      () => cameraToTransform(activeCamera, fullWidth, fullHeight),
-      [activeCamera, fullWidth, fullHeight]
-    );
+    const isZoomed = activeCamera.scale > MIN_SCALE + ZOOM_EPSILON;
 
     const strokeWidth = useMemo(() => {
       if (!layoutSize.width || !layoutSize.height) {
         return 1;
       }
 
-      const screenPixels = activeCamera.scale > 1.05 ? 1.75 : 1.35;
+      const screenPixels = isZoomed ? 1.75 : 1.35;
 
       return computeTransformStrokeWidth(
         activeCamera.scale,
@@ -177,16 +206,25 @@ const FranceMap = forwardRef(
         fullHeight,
         screenPixels
       );
-    }, [activeCamera.scale, fullHeight, fullWidth, layoutSize]);
+    }, [activeCamera.scale, fullHeight, fullWidth, isZoomed, layoutSize]);
+
+    const syncSharedCamera = useCallback(
+      (next) => {
+        scaleSV.value = next.scale;
+        focusXSV.value = next.focusX;
+        focusYSV.value = next.focusY;
+      },
+      [focusXSV, focusYSV, scaleSV]
+    );
 
     const setCamera = useCallback(
       (next) => {
         const clamped = clampCameraFocus(next, fullWidth, fullHeight);
         cameraRef.current = clamped;
-        cameraScaleSV.value = clamped.scale;
+        syncSharedCamera(clamped);
         setCameraState(clamped);
       },
-      [cameraScaleSV, fullWidth, fullHeight]
+      [fullWidth, fullHeight, syncSharedCamera]
     );
 
     const notifyZoomChange = useCallback((zoomed) => {
@@ -198,14 +236,83 @@ const FranceMap = forwardRef(
         return;
       }
       detailLoadedRef.current = true;
-      detailPathsRef.current = getDetailPaths();
-      setDetailReady(true);
+      InteractionManager.runAfterInteractions(() => {
+        detailPathsRef.current = getDetailPaths();
+        setDetailReady(true);
+      });
     }, []);
 
+    useEffect(() => {
+      const task = InteractionManager.runAfterInteractions(loadDetailPaths);
+      return () => task.cancel();
+    }, [loadDetailPaths]);
+
+    const setGesturing = useCallback((value) => {
+      isGesturingRef.current = value;
+    }, []);
+
+    const animateCameraTo = useCallback(
+      (next, onComplete) => {
+        const clamped = clampCameraFocus(next, fullWidth, fullHeight);
+        isAnimatingRef.current = true;
+
+        const timingConfig = {
+          duration: ZOOM_ANIMATION_MS,
+          easing: Easing.out(Easing.cubic),
+        };
+
+        const finish = () => {
+          isAnimatingRef.current = false;
+          setCamera(clamped);
+          onComplete?.(clamped);
+        };
+
+        scaleSV.value = withTiming(clamped.scale, timingConfig, (finished) => {
+          if (finished) {
+            runOnJS(finish)();
+          }
+        });
+        focusXSV.value = withTiming(clamped.focusX, timingConfig);
+        focusYSV.value = withTiming(clamped.focusY, timingConfig);
+      },
+      [focusXSV, focusYSV, fullHeight, fullWidth, scaleSV, setCamera]
+    );
+
     const resetCamera = useCallback(() => {
-      setCamera(defaultCamera);
-      notifyZoomChange(false);
-    }, [defaultCamera, notifyZoomChange, setCamera]);
+      animateCameraTo(defaultCamera, () => {
+        notifyZoomChange(false);
+      });
+    }, [animateCameraTo, defaultCamera, notifyZoomChange]);
+
+    const commitGestureCamera = useCallback(() => {
+      const clamped = clampCameraFocus(
+        {
+          scale: scaleSV.value,
+          focusX: focusXSV.value,
+          focusY: focusYSV.value,
+        },
+        fullWidth,
+        fullHeight
+      );
+      cameraRef.current = clamped;
+      syncSharedCamera(clamped);
+      setCameraState(clamped);
+
+      const zoomed = clamped.scale > MIN_SCALE + ZOOM_EPSILON;
+      notifyZoomChange(zoomed);
+      if (zoomed) {
+        loadDetailPaths();
+      }
+    }, [
+      focusXSV,
+      focusYSV,
+      fullHeight,
+      fullWidth,
+      loadDetailPaths,
+      notifyZoomChange,
+      scaleSV,
+      syncSharedCamera,
+    ]);
 
     useImperativeHandle(
       ref,
@@ -218,7 +325,6 @@ const FranceMap = forwardRef(
 
           const tryZoom = () => {
             const { width, height } = layoutRef.current;
-            const { width: mapW, height: mapH } = fullSizeRef.current;
 
             if (!width || !height) {
               requestAnimationFrame(tryZoom);
@@ -227,9 +333,17 @@ const FranceMap = forwardRef(
 
             loadDetailPaths();
 
-            const next = computeCameraForDepartment(dept, width, height, mapW, mapH);
-            setCamera(next);
-            notifyZoomChange(true);
+            const next = computeCameraForDepartment(
+              dept,
+              width,
+              height,
+              fullWidth,
+              fullHeight
+            );
+
+            animateCameraTo(next, () => {
+              notifyZoomChange(true);
+            });
           };
 
           tryZoom();
@@ -239,118 +353,54 @@ const FranceMap = forwardRef(
           resetCamera();
         },
       }),
-      [departments, loadDetailPaths, notifyZoomChange, resetCamera, setCamera]
+      [
+        animateCameraTo,
+        departments,
+        fullHeight,
+        fullWidth,
+        loadDetailPaths,
+        notifyZoomChange,
+        resetCamera,
+      ]
     );
 
-    const applyPinch = useCallback(
-      (nextScale) => {
-        const start = gestureStartRef.current;
-        if (!start) {
-          return;
-        }
-
-        const scale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
-        if (scale <= MIN_SCALE) {
-          setCamera(defaultCamera);
-          notifyZoomChange(false);
-          return;
-        }
-
-        setCamera({
-          scale,
-          focusX: start.focusX,
-          focusY: start.focusY,
-        });
-      },
-      [defaultCamera, notifyZoomChange, setCamera]
-    );
-
-    const applyPan = useCallback(
-      (translationX, translationY) => {
-        const start = gestureStartRef.current;
-        const { width, height } = layoutRef.current;
-        const { width: mapW, height: mapH } = fullSizeRef.current;
-        if (!start || !width || !height || start.scale <= MIN_SCALE) {
-          return;
-        }
-
-        const { width: vbW, height: vbH } = viewBoxDimensionsForScale(
-          start.scale,
-          mapW,
-          mapH
-        );
-        const { renderWidth, renderHeight } = getRenderSize(
-          width,
-          height,
-          mapW,
-          mapH
-        );
-
-        setCamera({
-          scale: start.scale,
-          focusX: start.focusX - (translationX * vbW) / Math.max(renderWidth, 1),
-          focusY: start.focusY - (translationY * vbH) / Math.max(renderHeight, 1),
-        });
-      },
-      [setCamera]
-    );
-
-    const beginGesture = useCallback(() => {
-      const current = cameraRef.current ?? defaultCamera;
-      gestureStartRef.current = {
-        scale: current.scale,
-        focusX: current.focusX,
-        focusY: current.focusY,
+    const animatedGroupProps = useAnimatedProps(() => {
+      const scale = Math.max(scaleSV.value, MIN_SCALE);
+      const centerX = fullWidth / 2;
+      const centerY = fullHeight / 2;
+      return {
+        transform: `translate(${centerX} ${centerY}) scale(${scale}) translate(${-focusXSV.value} ${-focusYSV.value})`,
       };
-    }, [defaultCamera]);
-
-    const finishPinch = useCallback(
-      (nextScale) => {
-        applyPinch(nextScale);
-        if (cameraRef.current.scale > MIN_SCALE) {
-          notifyZoomChange(true);
-          loadDetailPaths();
-        }
-        gestureStartRef.current = null;
-      },
-      [applyPinch, loadDetailPaths, notifyZoomChange]
-    );
-
-    const applyPinchUpdate = useCallback(
-      (pinchScale) => {
-        const start = gestureStartRef.current;
-        if (!start) {
-          return;
-        }
-        applyPinch(start.scale * pinchScale);
-      },
-      [applyPinch]
-    );
-
-    const finishPinchUpdate = useCallback(
-      (pinchScale) => {
-        const start = gestureStartRef.current;
-        if (!start) {
-          return;
-        }
-        finishPinch(start.scale * pinchScale);
-      },
-      [finishPinch]
-    );
-
-    const finishPan = useCallback(() => {
-      gestureStartRef.current = null;
-    }, []);
+    });
 
     const pinch = Gesture.Pinch()
       .onBegin(() => {
-        runOnJS(beginGesture)();
+        gestureStartScale.value = scaleSV.value;
+        gestureStartFocusX.value = focusXSV.value;
+        gestureStartFocusY.value = focusYSV.value;
+        runOnJS(setGesturing)(true);
       })
       .onUpdate((event) => {
-        runOnJS(applyPinchUpdate)(event.scale);
+        const nextScale = clamp(
+          gestureStartScale.value * event.scale,
+          MIN_SCALE,
+          MAX_SCALE
+        );
+
+        if (nextScale <= MIN_SCALE) {
+          scaleSV.value = MIN_SCALE;
+          focusXSV.value = fullWidth / 2;
+          focusYSV.value = fullHeight / 2;
+          return;
+        }
+
+        scaleSV.value = nextScale;
+        focusXSV.value = gestureStartFocusX.value;
+        focusYSV.value = gestureStartFocusY.value;
       })
-      .onEnd((event) => {
-        runOnJS(finishPinchUpdate)(event.scale);
+      .onEnd(() => {
+        runOnJS(setGesturing)(false);
+        runOnJS(commitGestureCamera)();
       });
 
     const pan = Gesture.Pan()
@@ -358,20 +408,46 @@ const FranceMap = forwardRef(
       .minDistance(12)
       .manualActivation(true)
       .onTouchesMove((_, state) => {
-        if (cameraScaleSV.value > MIN_SCALE) {
+        if (scaleSV.value > MIN_SCALE) {
           state.activate();
         } else {
           state.fail();
         }
       })
       .onBegin(() => {
-        runOnJS(beginGesture)();
+        gestureStartScale.value = scaleSV.value;
+        gestureStartFocusX.value = focusXSV.value;
+        gestureStartFocusY.value = focusYSV.value;
+        runOnJS(setGesturing)(true);
       })
       .onUpdate((event) => {
-        runOnJS(applyPan)(event.translationX, event.translationY);
+        if (gestureStartScale.value <= MIN_SCALE) {
+          return;
+        }
+
+        const { width: vbW, height: vbH } = viewBoxDimensionsForScale(
+          gestureStartScale.value,
+          fullWidth,
+          fullHeight
+        );
+        const { renderWidth, renderHeight } = getRenderSize(
+          layoutWidthSV.value,
+          layoutHeightSV.value,
+          fullWidth,
+          fullHeight
+        );
+
+        focusXSV.value =
+          gestureStartFocusX.value -
+          (event.translationX * vbW) / Math.max(renderWidth, 1);
+        focusYSV.value =
+          gestureStartFocusY.value -
+          (event.translationY * vbH) / Math.max(renderHeight, 1);
+        scaleSV.value = gestureStartScale.value;
       })
       .onEnd(() => {
-        runOnJS(finishPan)();
+        runOnJS(setGesturing)(false);
+        runOnJS(commitGestureCamera)();
       });
 
     const doubleTap = Gesture.Tap()
@@ -389,37 +465,79 @@ const FranceMap = forwardRef(
     );
 
     const selectedDept = useMemo(
-      () => departments.find((dept) => dept.code === selectedCode),
+      () =>
+        selectedCode
+          ? departments.find((dept) => dept.code === selectedCode)
+          : null,
       [departments, selectedCode]
     );
 
     const detailPaths = detailReady ? detailPathsRef.current : null;
 
-    const pathForDept = useCallback(
-      (dept) => {
-        if (
-          isMapZoomed &&
-          dept.code === selectedCode &&
-          detailPaths?.[dept.code]
-        ) {
-          return detailPaths[dept.code];
-        }
-        return dept.path;
-      },
-      [detailPaths, isMapZoomed, selectedCode]
+    const handleDepartmentPress = useCallback((code) => {
+      if (isGesturingRef.current || isAnimatingRef.current) {
+        return;
+      }
+      onDepartmentPressRef.current?.(code);
+    }, []);
+
+    const hitTargets = useMemo(
+      () =>
+        departments.map((dept) => (
+          <HitTarget
+            key={`hit-${dept.code}`}
+            dept={dept}
+            onPress={() => handleDepartmentPress(dept.code)}
+          />
+        )),
+      [departments, handleDepartmentPress]
     );
 
-    const pressHandlers = useMemo(() => {
-      const handlers = {};
-      for (const dept of departments) {
-        handlers[dept.code] = () => onDepartmentPressRef.current?.(dept.code);
+    const basePaths = useMemo(
+      () =>
+        departments
+          .filter((dept) => dept.code !== selectedCode)
+          .map((dept) => {
+            const fill =
+              highlightedSet.size > 0 && highlightedSet.has(dept.code)
+                ? '#90CAF9'
+                : '#f0f0f0';
+
+            return (
+              <DepartmentPath
+                key={dept.code}
+                fill={fill}
+                path={dept.path}
+                strokeWidth={strokeWidth}
+              />
+            );
+          }),
+      [departments, highlightedSet, selectedCode, strokeWidth]
+    );
+
+    const selectedPath = useMemo(() => {
+      if (!selectedDept) {
+        return null;
       }
-      return handlers;
-    }, [departments]);
+
+      const path =
+        isZoomed && detailPaths?.[selectedDept.code]
+          ? detailPaths[selectedDept.code]
+          : selectedDept.path;
+
+      return (
+        <DepartmentPath
+          key={`selected-${selectedDept.code}`}
+          fill="#2196F3"
+          path={path}
+          strokeWidth={strokeWidth}
+        />
+      );
+    }, [detailPaths, isZoomed, selectedDept, strokeWidth]);
 
     const prefectureLabelPosition = useMemo(() => {
       if (
-        !isMapZoomed ||
+        !isZoomed ||
         !selectedDept?.prefectureX ||
         !selectedDept?.prefectureY ||
         !layoutSize.width ||
@@ -437,7 +555,7 @@ const FranceMap = forwardRef(
         fullWidth,
         fullHeight
       );
-    }, [activeCamera, fullHeight, fullWidth, isMapZoomed, layoutSize, selectedDept]);
+    }, [activeCamera, fullHeight, fullWidth, isZoomed, layoutSize, selectedDept]);
 
     const prefectureName = selectedDept
       ? getPrefectureName(selectedDept.code)
@@ -450,7 +568,11 @@ const FranceMap = forwardRef(
           onLayout={(event) => {
             const { width, height } = event.nativeEvent.layout;
             layoutRef.current = { width, height };
-            setLayoutSize({ width, height });
+            layoutWidthSV.value = width;
+            layoutHeightSV.value = height;
+            if (layoutSize.width !== width || layoutSize.height !== height) {
+              setLayoutSize({ width, height });
+            }
           }}
         >
           <Svg
@@ -460,39 +582,23 @@ const FranceMap = forwardRef(
             preserveAspectRatio="xMidYMid meet"
             style={styles.container}
           >
-            <G transform={mapTransform}>
-              {departments.map((dept) => {
-                const isSelected = dept.code === selectedCode;
-                const isHighlighted =
-                  highlightedSet.size > 0 && highlightedSet.has(dept.code);
-
-                let fill = '#f0f0f0';
-                if (isSelected) {
-                  fill = '#2196F3';
-                } else if (isHighlighted) {
-                  fill = '#90CAF9';
-                }
-
-                return (
-                  <DepartmentPath
-                    key={dept.code}
-                    code={dept.code}
-                    fill={fill}
-                    path={pathForDept(dept)}
-                    strokeWidth={strokeWidth}
-                    onPress={pressHandlers[dept.code]}
-                  />
-                );
-              })}
-              {selectedDept && !isMapZoomed && (
-                <PrefectureMarker
-                  dept={selectedDept}
-                  strokeScale={Math.max(activeCamera.scale, 1)}
-                />
+            <AnimatedG animatedProps={animatedGroupProps}>
+              <G pointerEvents="none">{basePaths}</G>
+              {selectedPath && (
+                <G pointerEvents="none">
+                  {selectedPath}
+                  {!isZoomed && (
+                    <PrefectureMarker
+                      dept={selectedDept}
+                      strokeScale={Math.max(activeCamera.scale, 1)}
+                    />
+                  )}
+                </G>
               )}
-            </G>
+              {hitTargets}
+            </AnimatedG>
           </Svg>
-          {isMapZoomed && (
+          {isZoomed && (
             <PrefectureLabelOverlay
               name={prefectureName}
               position={prefectureLabelPosition}
@@ -547,4 +653,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FranceMap;
+export default memo(FranceMap);

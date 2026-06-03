@@ -12,6 +12,7 @@ export const clamp = (value, min, max) => {
 };
 
 export const getRenderSize = (layoutWidth, layoutHeight, viewBoxWidth, viewBoxHeight) => {
+  'worklet';
   const containerAspect = layoutWidth / layoutHeight;
   const viewAspect = viewBoxWidth / viewBoxHeight;
 
@@ -153,6 +154,7 @@ export const createDefaultCamera = (fullWidth, fullHeight) => ({
 });
 
 export const clampCameraFocus = (camera, fullWidth, fullHeight) => {
+  'worklet';
   const scale = Math.max(camera.scale, MIN_MAP_SCALE);
   const { width: vbW, height: vbH } = viewBoxDimensionsForScale(scale, fullWidth, fullHeight);
   return {
