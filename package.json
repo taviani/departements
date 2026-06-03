@@ -14,7 +14,8 @@
     "submit:android": "eas submit --platform android --profile production --latest",
     "build:map-data": "node scripts/build-map-data.js",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "check-secrets": "bash scripts/check-secrets.sh"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",

@@ -30,3 +30,14 @@ jobs:
 
       - name: Run tests
         run: npm test -- --ci --coverage=false
+
+  secrets-check:
+    name: Secret scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for committed secrets
+        run: bash scripts/check-secrets.sh

@@ -1,0 +1,122 @@
+name: EAS Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+          - preview
+      platform:
+        description: Platform to build
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - ios
+          - android
+
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: eas-build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build (${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'production' }})
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: ./package.json
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: npm
+
+      - name: Resolve build profile
+        id: config
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "profile=${{ inputs.profile }}" >> "$GITHUB_OUTPUT"
+            echo "platform=${{ inputs.platform }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "profile=production" >> "$GITHUB_OUTPUT"
+            echo "platform=all" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger EAS build
+        id: build
+        env:
+          BUILD_PROFILE: ${{ steps.config.outputs.profile }}
+          BUILD_PLATFORM: ${{ steps.config.outputs.platform }}
+          GITHUB_OUTPUT: ${{ env.GITHUB_OUTPUT }}
+        run: |
+          set -euo pipefail
+          eas build \
+            --platform "$BUILD_PLATFORM" \
+            --profile "$BUILD_PROFILE" \
+            --non-interactive \
+            --no-wait \
+            --json > build-output.json
+
+          node <<'NODE'
+          const fs = require('fs');
+
+          const raw = fs.readFileSync('build-output.json', 'utf8');
+          const parsed = JSON.parse(raw);
+          const builds = Array.isArray(parsed) ? parsed : [parsed];
+
+          if (!builds.length || !builds[0]?.id) {
+            console.error('Unexpected EAS build output:', raw);
+            process.exit(1);
+          }
+
+          const summaryLines = [];
+          const outputLines = [];
+
+          for (const build of builds) {
+            const platform = (build.platform ?? 'unknown').toLowerCase();
+            const url =
+              build.buildUrl ?? `https://expo.dev/builds/${build.id}`;
+            outputLines.push(`${platform}_build_url=${url}`);
+            summaryLines.push(`- **${platform}**: [${build.id}](${url})`);
+          }
+
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, outputLines.join('\n') + '\n');
+          fs.writeFileSync(
+            'build-summary.md',
+            ['## Builds', '', ...summaryLines].join('\n')
+          );
+          NODE
+
+      - name: Build summary
+        run: |
+          {
+            echo "## EAS build triggered"
+            echo
+            echo "- Profile: \`${{ steps.config.outputs.profile }}\`"
+            echo "- Platform: \`${{ steps.config.outputs.platform }}\`"
+            echo
+            tail -n +3 build-summary.md
+          } >> "$GITHUB_STEP_SUMMARY"
