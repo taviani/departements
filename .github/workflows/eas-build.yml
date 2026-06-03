@@ -50,7 +50,6 @@ jobs:
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
-          eas-version: ./package.json
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
@@ -73,7 +72,7 @@ jobs:
           GITHUB_OUTPUT: ${{ env.GITHUB_OUTPUT }}
         run: |
           set -euo pipefail
-          eas build \
+          npx eas build \
             --platform "$BUILD_PLATFORM" \
             --profile "$BUILD_PROFILE" \
             --non-interactive \
