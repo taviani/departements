@@ -114,6 +114,53 @@ export const viewBoxPointToScreen = (
   );
 };
 
+/** Inverse of mapPointToScreen for tap handling. */
+export const screenPointToMap = (
+  screenX,
+  screenY,
+  camera,
+  layoutWidth,
+  layoutHeight,
+  fullWidth,
+  fullHeight
+) => {
+  const scale = Math.max(camera.scale, 1);
+  const { renderWidth, renderHeight, offsetX, offsetY } = getRenderSize(
+    layoutWidth,
+    layoutHeight,
+    fullWidth,
+    fullHeight
+  );
+  const viewBoxX = ((screenX - offsetX) / renderWidth) * fullWidth;
+  const viewBoxY = ((screenY - offsetY) / renderHeight) * fullHeight;
+  const centerX = fullWidth / 2;
+  const centerY = fullHeight / 2;
+
+  return {
+    x: camera.focusX + (viewBoxX - centerX) / scale,
+    y: camera.focusY + (viewBoxY - centerY) / scale,
+  };
+};
+
+export const findDepartmentAtMapPoint = (departments, mapX, mapY) => {
+  for (let index = departments.length - 1; index >= 0; index -= 1) {
+    const dept = departments[index];
+    const halfW = dept.bboxW / 2;
+    const halfH = dept.bboxH / 2;
+
+    if (
+      mapX >= dept.cx - halfW &&
+      mapX <= dept.cx + halfW &&
+      mapY >= dept.cy - halfH &&
+      mapY <= dept.cy + halfH
+    ) {
+      return dept.code;
+    }
+  }
+
+  return null;
+};
+
 /** Project a map coordinate to screen pixels using the transform-based camera. */
 export const mapPointToScreen = (
   mapX,

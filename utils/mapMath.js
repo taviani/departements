@@ -171,6 +171,117 @@ export const cameraToTransform = (camera, fullWidth, fullHeight) => {
   return `translate(${centerX} ${centerY}) scale(${scale}) translate(${-camera.focusX} ${-camera.focusY})`;
 };
 
+/** GPU-friendly View transform matching the SVG camera transform. */
+export const cameraToViewStyleTransform = (
+  scale,
+  focusX,
+  focusY,
+  layoutWidth,
+  layoutHeight,
+  fullWidth,
+  fullHeight
+) => {
+  'worklet';
+  const safeScale = Math.max(scale, MIN_MAP_SCALE);
+  const { renderWidth, renderHeight, offsetX, offsetY } = getRenderSize(
+    layoutWidth,
+    layoutHeight,
+    fullWidth,
+    fullHeight
+  );
+  const focusScrX = offsetX + renderWidth / 2;
+  const focusScrY = offsetY + renderHeight / 2;
+  const focusBaseX = offsetX + (focusX / fullWidth) * renderWidth;
+  const focusBaseY = offsetY + (focusY / fullHeight) * renderHeight;
+
+  return {
+    translateX: focusScrX - safeScale * focusBaseX,
+    translateY: focusScrY - safeScale * focusBaseY,
+    scale: safeScale,
+  };
+};
+
+export const screenPointToMapWorklet = (
+  screenX,
+  screenY,
+  scale,
+  focusX,
+  focusY,
+  layoutWidth,
+  layoutHeight,
+  fullWidth,
+  fullHeight
+) => {
+  'worklet';
+  const safeScale = Math.max(scale, MIN_MAP_SCALE);
+  const { renderWidth, renderHeight, offsetX, offsetY } = getRenderSize(
+    layoutWidth,
+    layoutHeight,
+    fullWidth,
+    fullHeight
+  );
+  const viewBoxX = ((screenX - offsetX) / renderWidth) * fullWidth;
+  const viewBoxY = ((screenY - offsetY) / renderHeight) * fullHeight;
+  const centerX = fullWidth / 2;
+  const centerY = fullHeight / 2;
+
+  return {
+    x: focusX + (viewBoxX - centerX) / safeScale,
+    y: focusY + (viewBoxY - centerY) / safeScale,
+  };
+};
+
+export const focusForMapPointAtScreenWorklet = (
+  screenX,
+  screenY,
+  mapX,
+  mapY,
+  scale,
+  layoutWidth,
+  layoutHeight,
+  fullWidth,
+  fullHeight
+) => {
+  'worklet';
+  const safeScale = Math.max(scale, MIN_MAP_SCALE);
+  const { renderWidth, renderHeight, offsetX, offsetY } = getRenderSize(
+    layoutWidth,
+    layoutHeight,
+    fullWidth,
+    fullHeight
+  );
+  const viewBoxX = ((screenX - offsetX) / renderWidth) * fullWidth;
+  const viewBoxY = ((screenY - offsetY) / renderHeight) * fullHeight;
+  const centerX = fullWidth / 2;
+  const centerY = fullHeight / 2;
+
+  return {
+    focusX: mapX - (viewBoxX - centerX) / safeScale,
+    focusY: mapY - (viewBoxY - centerY) / safeScale,
+  };
+};
+
+export const isDepartmentVisible = (dept, camera, fullWidth, fullHeight) => {
+  const scale = Math.max(camera.scale, MIN_MAP_SCALE);
+  if (scale <= MIN_MAP_SCALE + 0.001) {
+    return true;
+  }
+
+  const vbW = fullWidth / scale;
+  const vbH = fullHeight / scale;
+  const minX = camera.focusX - vbW / 2;
+  const minY = camera.focusY - vbH / 2;
+  const maxX = minX + vbW;
+  const maxY = minY + vbH;
+
+  const left = dept.cx - dept.bboxW / 2;
+  const right = dept.cx + dept.bboxW / 2;
+  const top = dept.cy - dept.bboxH / 2;
+  const bottom = dept.cy + dept.bboxH / 2;
+
+  return right >= minX && left <= maxX && bottom >= minY && top <= maxY;
+};
+
 export const computeCameraForDepartment = (
   dept,
   layoutWidth,
