@@ -31,6 +31,9 @@ jobs:
       - name: Enforce Expo Go policy
         run: npm run check:expo-go
 
+      - name: Expo Doctor
+        run: npm run check:doctor
+
       - name: Run tests
         run: npm test -- --ci --coverage=false
 
