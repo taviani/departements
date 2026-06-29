@@ -60,6 +60,13 @@ describe('map data integrity', () => {
     });
   });
 
+  it('provides a pre-merged overview path for fast rendering', () => {
+    expect(mapData.mergedBasePath).toMatch(/^M/);
+    expect(mapData.mergedBasePath.length).toBeGreaterThan(
+      mapData.departments[0].path.length
+    );
+  });
+
   it('provides geometry and centroid for each map department', () => {
     mapData.departments.forEach((dept) => {
       expect(dept.path).toMatch(/^M/);

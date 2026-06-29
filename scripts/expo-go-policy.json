@@ -1,0 +1,51 @@
+{
+  "defaultScripts": {
+    "start": "node scripts/start-go.js",
+    "dev": "node scripts/start-go.js",
+    "go": "node scripts/start-go.js"
+  },
+  "allowedProductionDependencies": [
+    "@react-native-async-storage/async-storage",
+    "@expo/metro-runtime",
+    "@expo/vector-icons",
+    "expo",
+    "expo-asset",
+    "expo-dev-client",
+    "expo-font",
+    "expo-notifications",
+    "expo-splash-screen",
+    "fflate",
+    "react",
+    "react-native",
+    "react-native-reanimated",
+    "react-native-svg",
+    "react-native-worklets"
+  ],
+  "requiredRule": {
+    "path": ".cursor/rules/expo-go-first.mdc",
+    "mustContain": ["alwaysApply: true", "Expo Go first"]
+  },
+  "requiredDocPhrases": {
+    "README.md": ["Expo Go first", "npm start"],
+    "DEPLOY-IPHONE.md": ["Expo Go"]
+  },
+  "fileChecks": {
+    "scripts/start-go.js": {
+      "mustContain": ["expo", "start", "--go"],
+      "mustNotContain": ["--dev-client"]
+    },
+    "components/FranceMap.js": {
+      "mustContain": [
+        "mergedBasePath",
+        "HitTarget",
+        "detailCode",
+        "matrix:"
+      ],
+      "mustNotContain": [
+        "GestureDetector",
+        "Gesture.Pinch",
+        "Gesture.Pan"
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/check-expo-go.sh",
+        "matcher": "Write",
+        "failClosed": false
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": ".cursor/hooks/session-context.sh"
+      }
+    ]
+  }
+}

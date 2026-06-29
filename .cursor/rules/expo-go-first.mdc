@@ -1,0 +1,42 @@
+---
+description: Expo Go-first dev flow; keep the app small and simple
+alwaysApply: true
+---
+
+# Expo Go first, stay small
+
+## Default dev flow
+
+- **`npm start`** (Expo Go + QR) is the only required dev path. Do not make Xcode, `expo run:ios`, or a custom dev client necessary for normal work.
+- `start`, `dev`, and `go` must all run `scripts/start-go.js` — never `--dev-client` by default.
+- Optional native paths (`dev:client`, `ios`, `ios:sim`) stay secondary; document them in DEPLOY-DEV-CLIENT.md only.
+
+## Adding features
+
+Before adding a dependency or native module, check it runs in **Expo Go SDK 54**:
+
+- Prefer packages bundled with Expo (`expo-*`, SDK-aligned `react-native-*`).
+- Avoid `expo prebuild`, custom native code, or plugins that require a dev client unless there is no Expo Go alternative.
+- If a feature needs a native module Expo Go lacks, say so explicitly and keep Expo Go working for everything else.
+
+## Keep it small and simple
+
+- Minimize scope: smallest correct diff; no extra abstractions or helpers.
+- Minimize bundle size: one compressed overview map; camera zoom reuses it — no extra map tiers.
+- Minimize dependencies: do not add packages when existing Expo/RN APIs suffice.
+- Prefer one clear implementation (e.g. SVG camera transform + hit targets) over parallel GPU/coordinate paths.
+- Do not add tests, docs, or scripts unless they support the change or are requested.
+
+## Map (Expo Go compatible)
+
+- Fixed SVG `viewBox`, **one merged overview path** — static by default for performance.
+- **Detail-strip zoom only** — animated camera (`AnimatedG` + `matrix`); no pinch/pan.
+- Taps: transparent SVG hit targets (`Rect` + `onPress`).
+- Prefecture: dot on overview; readable label overlay when zoomed.
+
+## Scripts checklist when touching dev tooling
+
+- [ ] `npm run check:expo-go` passes
+- [ ] `npm start` launches Expo Go (no `--dev-client`)
+- [ ] README and DEPLOY-IPHONE.md still describe QR → Expo Go as primary
+- [ ] New production deps added to `scripts/expo-go-policy.json` allowlist only if Expo Go–compatible
