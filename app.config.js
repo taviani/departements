@@ -14,10 +14,17 @@ module.exports = () => {
     iosInfoPlist.NSBonjourServices = ['_expo._tcp', '_http._tcp'];
   }
 
+  iosInfoPlist.NSUserNotificationsUsageDescription =
+    'Recevoir des rappels et des actualités sur les départements.';
+
+  const plugins = isStoreBuild
+    ? ['expo-notifications']
+    : ['expo-dev-client', 'expo-notifications'];
+
   return {
     expo: {
       ...base,
-      plugins: isStoreBuild ? [] : ['expo-dev-client'],
+      plugins,
       ios: {
         ...base.ios,
         infoPlist: iosInfoPlist,

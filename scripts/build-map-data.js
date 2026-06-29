@@ -1,7 +1,6 @@
 /**
- * Converts departements.geojson into compact, gzip-compressed SVG map data.
- * Outputs overview + detail tiers for two-level zoom rendering.
- * Run: node scripts/build-map-data.js
+ * Converts departements.geojson into a gzip-compressed SVG overview map.
+ * Run: npm run build:map-data
  */
 const fs = require('fs');
 const path = require('path');
@@ -12,10 +11,6 @@ const INPUT = path.join(__dirname, '../data/departements.geojson');
 const OUTPUT_OVERVIEW = path.join(
   __dirname,
   '../data/departements-map.compressed.js'
-);
-const OUTPUT_DETAIL = path.join(
-  __dirname,
-  '../data/departements-map-detail.compressed.js'
 );
 const GEOJSON_URL =
   'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements.geojson';
@@ -29,11 +24,15 @@ const OVERVIEW_TOLERANCE = {
   simple: 0.16,
 };
 
-const DETAIL_TOLERANCE = {
-  dense: 0.02,
-  medium: 0.035,
-  simple: 0.055,
-};
+function extractCoords(geometry) {
+  if (geometry.type === 'Polygon') {
+    return geometry.coordinates.flat();
+  }
+  if (geometry.type === 'MultiPolygon') {
+    return geometry.coordinates.flat(2);
+  }
+  return [];
+}
 
 if (!fs.existsSync(INPUT)) {
   console.log('Downloading departements.geojson...');
@@ -204,11 +203,9 @@ export default '${compressed}';
 };
 
 const overviewDepartments = [];
-const detailDepartments = [];
 
 for (const feature of geojson.features) {
   const overview = geometryToPath(feature.geometry, OVERVIEW_TOLERANCE);
-  const detail = geometryToPath(feature.geometry, DETAIL_TOLERANCE);
   const points = overview.points;
   const xs = points.map(([x]) => x);
   const ys = points.map(([, y]) => y);
@@ -231,39 +228,16 @@ for (const feature of geojson.features) {
     px: prefectureX == null ? null : toTenths(prefectureX),
     py: prefectureY == null ? null : toTenths(prefectureY),
   });
-
-  detailDepartments.push({
-    c: feature.properties.code,
-    d: detail.path,
-  });
 }
 
 const overviewPayload = JSON.stringify({
   v: `0 0 ${WIDTH} ${HEIGHT}`,
   d: overviewDepartments,
 });
-const detailPayload = JSON.stringify({ d: detailDepartments });
 
 const overviewStats = writeCompressedModule(OUTPUT_OVERVIEW, overviewPayload);
-const detailStats = writeCompressedModule(OUTPUT_DETAIL, detailPayload);
 
 console.log(`Wrote ${overviewDepartments.length} departments`);
 console.log(
   `Overview: ${overviewStats.rawKb.toFixed(0)} KB raw, ${overviewStats.gzipKb.toFixed(0)} KB gzip, ${overviewStats.bundleKb.toFixed(0)} KB bundle`
 );
-console.log(
-  `Detail:   ${detailStats.rawKb.toFixed(0)} KB raw, ${detailStats.gzipKb.toFixed(0)} KB gzip, ${detailStats.bundleKb.toFixed(0)} KB bundle`
-);
-console.log(
-  `Total bundle: ${(overviewStats.bundleKb + detailStats.bundleKb).toFixed(0)} KB (detail lazy-loaded on zoom)`
-);
-
-function extractCoords(geometry) {
-  if (geometry.type === 'Polygon') {
-    return geometry.coordinates.flat();
-  }
-  if (geometry.type === 'MultiPolygon') {
-    return geometry.coordinates.flat(2);
-  }
-  return [];
-}

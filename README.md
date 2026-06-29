@@ -4,21 +4,26 @@ A React Native (Expo) app to explore the 96 metropolitan French départements �
 
 ## Features
 
-- **Interactive SVG map** — all 96 départements with tap-to-select
-- **Zoom** — tap the detail strip to zoom on a département; pinch, pan, and double-tap to reset
-- **Prefecture markers** — city dot on the overview map; readable label with background when zoomed
-- **Search** — filter by département number or name
-- **List & shuffle** — browse the full list or pick a random département
+- **Interactive SVG map** — tap-to-select; tap the detail strip to zoom on a département
+- **Prefecture** — city dot on overview; readable label when zoomed
+- **Search** — swipe right to open search overlay; filter by number or name
+- **List & random** — full list in search overlay, or **swipe left** for a random département
 - **Detail strip** — name, number, and region for the selected département
 - **Animated splash** — logo reveal on launch
 
 The list and map both cover metropolitan France (96 départements, including Corsica 2A/2B).
 
+## Design principles
+
+- **Expo Go first** — `npm start` + QR code is the default dev flow. No Xcode or custom dev client required for day-to-day work.
+- **Expo Go–compatible stack** — SDK 54 (`react-native-svg`, Reanimated for detail-strip zoom).
+- **Small and simple** — one map asset, minimal dependencies, smallest correct change.
+
 ## Requirements
 
 - Node.js 20+
 - npm
-- For device testing: [Expo dev client](https://docs.expo.dev/develop/development-builds/introduction/) (this project uses native modules — Expo Go is not supported)
+- **[Expo Go](https://expo.dev/go)** on your phone (SDK 54) for device testing — or press **`i`** for the iOS simulator
 
 ## Setup
 
@@ -36,23 +41,20 @@ npm run build:map-data
 
 ## Development
 
+**→ [Run on your iPhone](DEPLOY-IPHONE.md)** — Expo Go, one command + QR code.
+
 ```bash
-# Start Metro (generates map data if missing)
 npm start
-
-# Run on a connected device or simulator (dev client)
-npm run ios
-npm run android
-
-# Web
-npm run web
 ```
 
-With Metro running, open the app in your dev client build. For a physical iPhone over the network, use a tunnel:
+- **iPhone:** scan the QR code → opens in **Expo Go**
+- **Simulator:** press **`i`**
 
-```bash
-npx expo start --dev-client --tunnel
-```
+Edit and save → hot reload. Press **`r`** in the terminal to reload.
+
+### Optional: custom dev client
+
+For native builds on device without Expo Go: [DEPLOY-DEV-CLIENT.md](DEPLOY-DEV-CLIENT.md) (`npm run dev:client`, `npm run ios`).
 
 ## Testing
 
@@ -60,6 +62,8 @@ npx expo start --dev-client --tunnel
 npm test
 npm run test:watch
 ```
+
+`npm test` runs the **Expo Go policy check** first (`check:expo-go`) — scripts, dependencies, map patterns, and docs must stay Expo Go–compatible.
 
 Tests run on every push and pull request to `main` via [GitHub Actions](.github/workflows/ci.yml).
 
@@ -73,13 +77,19 @@ npm run build:android
 npm run build:all
 ```
 
-### GitHub Actions (EAS Build)
+### GitHub Actions
 
-The [EAS Build workflow](.github/workflows/eas-build.yml) triggers iOS and Android builds on [EAS Build](https://docs.expo.dev/build/introduction/) servers.
+| Workflow | Trigger | Action |
+|----------|---------|--------|
+| [ci.yml](.github/workflows/ci.yml) | Push / PR on `main` | Tests + Expo Go policy + secret scan |
+| [eas-deploy-ios.yml](.github/workflows/eas-deploy-ios.yml) | **Push on `main`** (merge included) | iOS production build + **TestFlight** (`--auto-submit`) |
+| [eas-build.yml](.github/workflows/eas-build.yml) | Manual, or tag `v*` | iOS/Android build only (no submit) |
 
-**Run manually:** GitHub → Actions → **EAS Build** → **Run workflow**
+**After a PR is merged to `main`**, the **Deploy iOS to TestFlight** workflow runs automatically: EAS builds the `production` profile and uploads to TestFlight. Processing on Apple’s side usually takes 10–15 minutes.
 
-**Run on release:** push a tag such as `v1.0.1`
+**Manual builds (no TestFlight):** GitHub → Actions → **EAS Build** → **Run workflow**
+
+**Release tags:** push `v1.0.1` to trigger [eas-build.yml](.github/workflows/eas-build.yml) for iOS + Android without auto-submit.
 
 #### Required secret
 
@@ -97,9 +107,9 @@ CI builds run in non-interactive mode. Before the first **production** iOS build
 npx eas build --platform ios --profile production
 ```
 
-Sign in with your Apple Developer account when prompted. After that, GitHub Actions can trigger iOS production builds using the credentials stored on Expo.
+Sign in with your Apple Developer account when prompted. After that, GitHub Actions can trigger iOS production builds and TestFlight uploads using the credentials stored on Expo.
 
-The **preview** profile (internal distribution) can be selected in the workflow if you need ad hoc builds before production credentials are ready.
+The **preview** profile (internal distribution) can be selected in the manual **EAS Build** workflow if you need ad hoc builds before production credentials are ready.
 
 ### iOS production build from CI (step by step)
 
@@ -156,6 +166,8 @@ npx eas submit --platform ios --profile production --latest
 
 Then install via the TestFlight app on your iPhone.
 
+Merges to `main` upload to TestFlight automatically via [eas-deploy-ios.yml](.github/workflows/eas-deploy-ios.yml); no local submit needed for that path.
+
 ## Security
 
 Secrets must never be committed. See [SECURITY.md](SECURITY.md).
@@ -176,44 +188,39 @@ Every push/PR runs the same scan in CI.
 
 ```
 departements/
-├── App.js                      # Main screen: search, list, map, detail strip
+├── App.js                      # Composition root
+├── hooks/                      # Selection + map camera state
 ├── components/
-│   ├── FranceMap.js            # SVG map, gestures, prefecture overlay
-│   └── AnimatedSplash.js
+│   ├── FranceMap.js            # SVG map, detail-strip zoom, prefecture marker
+│   └── ...
 ├── data/
 │   ├── departements.js         # List of 96 metropolitan départements
 │   ├── prefectures.json        # Prefecture coordinates (source)
-│   └── *.compressed.js         # Gzip-compressed SVG map (overview + detail)
+│   └── departements-map.compressed.js  # Gzip-compressed SVG overview
 ├── scripts/
-│   ├── build-map-data.js       # GeoJSON → compressed map tiers
+│   ├── build-map-data.js       # GeoJSON → compressed overview map
 │   └── ensure-map-data.js      # Auto-build map data if missing
-├── utils/                      # Map math, projection, search, loaders
-├── __tests__/                  # Jest test suites
+├── utils/                      # Map math, projection, search
+├── __tests__/
 └── .github/workflows/
-    ├── ci.yml                  # Tests + secret scan on push/PR
-    └── eas-build.yml           # EAS iOS/Android builds (manual or tag)
 ```
 
 See also: [SECURITY.md](SECURITY.md)
 
 ## Map data
 
-The map uses a two-tier SVG pipeline to keep the app lightweight while staying sharp when zoomed:
+The app ships a single gzip-compressed SVG overview (96 départements, ~340 KB in the bundle). Detail-strip zoom animates the camera over this path — no second geometry tier.
 
-| Tier | File | Purpose |
-|------|------|---------|
-| Overview | `departements-map.compressed.js` | Simplified paths, bundled at startup |
-| Detail | `departements-map-detail.compressed.js` | High-resolution path for the selected département, lazy-loaded on zoom |
-
-Camera zoom is implemented with a fixed SVG `viewBox` and a `<G transform>` (reliable on iOS), not dynamic viewBox changes.
+| File | Purpose |
+|------|---------|
+| `departements-map.compressed.js` | Overview paths + centroids + prefecture coords |
 
 Raw `departements.geojson` is gitignored; run `npm run build:map-data` to fetch and rebuild.
 
 ## Technologies
 
-- **Expo 53** + **React Native 0.79**
+- **Expo 54** + **React Native 0.81**
 - **react-native-svg** — vector map
-- **react-native-gesture-handler** + **Reanimated** — pinch/pan
 - **Jest** + **Testing Library** — unit and component tests
 
 ## License
