@@ -21,6 +21,7 @@
     "submit:android": "eas submit --platform android --profile production --latest",
     "build:map-data": "node scripts/build-map-data.js",
     "check:expo-go": "node scripts/check-expo-go.js",
+    "check:doctor": "npx -y expo-doctor",
     "pretest": "node scripts/check-expo-go.js",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -47,7 +48,6 @@
     "@babel/core": "^7.20.0",
     "@testing-library/react-native": "^13.3.3",
     "babel-preset-expo": "~54.0.10",
-    "eas-cli": "^16.15.0",
     "jest": "~29.7.0",
     "jest-expo": "~54.0.17",
     "react-test-renderer": "19.1.0"
