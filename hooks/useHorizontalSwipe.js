@@ -50,6 +50,7 @@ export function useHorizontalSwipe({ onSwipeLeft, onSwipeRight, onSwipeDown }) {
           );
         },
         onMoveShouldSetPanResponderCapture: () => false,
+        onPanResponderTerminationRequest: () => false,
         onPanResponderRelease: (_, gesture) => {
           const action = resolveSwipeAction(gesture);
           if (action === 'right') {

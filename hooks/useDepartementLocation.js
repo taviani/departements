@@ -17,14 +17,14 @@ const startBackgroundUpdates = async () => {
     return false;
   }
 
-  const hasTask = await Location.hasStartedLocationUpdatesAsync(
-    DEPARTEMENT_LOCATION_TASK
-  );
-  if (hasTask) {
-    return true;
-  }
-
   try {
+    const hasTask = await Location.hasStartedLocationUpdatesAsync(
+      DEPARTEMENT_LOCATION_TASK
+    );
+    if (hasTask) {
+      return true;
+    }
+
     await Location.startLocationUpdatesAsync(DEPARTEMENT_LOCATION_TASK, {
       ...BACKGROUND_LOCATION_OPTIONS,
       accuracy: Location.Accuracy.Balanced,
@@ -56,6 +56,8 @@ export function useDepartementLocation() {
   const watchRef = useRef(null);
   const settingsRef = useRef(null);
   const lastCelebrationRef = useRef({ code: null, at: 0 });
+  const watchSessionRef = useRef(0);
+  const trackingEnabledRef = useRef(false);
 
   const triggerMatchCelebration = useCallback((code, { force = false } = {}) => {
     const departement = getDepartementByCode(code);
@@ -104,11 +106,18 @@ export function useDepartementLocation() {
       settings.enabled &&
       settings.departementChanges
     ) {
-      await notifyDepartementChange(changedDepartementCode);
+      try {
+        await notifyDepartementChange(changedDepartementCode);
+      } catch (error) {
+        console.warn('Department change notification failed:', error);
+      }
     }
   }, [refreshSettings, triggerMatchCelebration]);
 
   const stopWatching = useCallback(async () => {
+    watchSessionRef.current += 1;
+    trackingEnabledRef.current = false;
+
     if (watchRef.current) {
       watchRef.current.remove();
       watchRef.current = null;
@@ -117,7 +126,19 @@ export function useDepartementLocation() {
   }, []);
 
   const startWatching = useCallback(async () => {
-    await stopWatching();
+    const session = watchSessionRef.current + 1;
+    watchSessionRef.current = session;
+    trackingEnabledRef.current = true;
+
+    if (watchRef.current) {
+      watchRef.current.remove();
+      watchRef.current = null;
+    }
+    await stopBackgroundUpdates();
+
+    if (!trackingEnabledRef.current || watchSessionRef.current !== session) {
+      return;
+    }
 
     try {
       watchRef.current = await Location.watchPositionAsync(
@@ -135,14 +156,24 @@ export function useDepartementLocation() {
       return;
     }
 
+    if (watchSessionRef.current !== session) {
+      watchRef.current?.remove();
+      watchRef.current = null;
+      return;
+    }
+
     const settings = await refreshSettings();
-    if (settings.enabled && settings.departementChanges) {
+    if (
+      settings.enabled &&
+      settings.departementChanges &&
+      watchSessionRef.current === session
+    ) {
       const background = await Location.getBackgroundPermissionsAsync();
       if (background.status === 'granted') {
         await startBackgroundUpdates();
       }
     }
-  }, [handleSample, refreshSettings, stopWatching]);
+  }, [handleSample, refreshSettings]);
 
   const syncTracking = useCallback(async () => {
     const foreground = await Location.getForegroundPermissionsAsync();
@@ -185,14 +216,19 @@ export function useDepartementLocation() {
       return 'granted';
     }
 
-    const { status } = await Location.requestBackgroundPermissionsAsync();
-    if (status === 'granted') {
-      const settings = await refreshSettings();
-      if (settings.enabled && settings.departementChanges) {
-        await startBackgroundUpdates();
+    try {
+      const { status } = await Location.requestBackgroundPermissionsAsync();
+      if (status === 'granted') {
+        const settings = await refreshSettings();
+        if (settings.enabled && settings.departementChanges) {
+          await startBackgroundUpdates();
+        }
       }
+      return status;
+    } catch (error) {
+      console.warn('Background location permission request failed:', error);
+      return 'denied';
     }
-    return status;
   }, [refreshSettings, requestForegroundPermission]);
 
   useEffect(() => {

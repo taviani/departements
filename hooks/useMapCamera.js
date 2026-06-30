@@ -21,6 +21,7 @@ export function useMapCamera({
 }) {
   const layoutRef = useRef({ width: 0, height: 0 });
   const isAnimatingRef = useRef(false);
+  const animationGenerationRef = useRef(0);
   const onZoomChangeRef = useRef(onZoomChange);
   const lastZoomedCodeRef = useRef(null);
   onZoomChangeRef.current = onZoomChange;
@@ -61,6 +62,8 @@ export function useMapCamera({
   const animateCameraTo = useCallback(
     (next, onComplete) => {
       const clamped = clampCameraFocus(next, fullWidth, fullHeight);
+      const generation = animationGenerationRef.current + 1;
+      animationGenerationRef.current = generation;
       isAnimatingRef.current = true;
 
       const timing = {
@@ -69,6 +72,9 @@ export function useMapCamera({
       };
 
       const finish = () => {
+        if (animationGenerationRef.current !== generation) {
+          return;
+        }
         isAnimatingRef.current = false;
         setCamera(clamped);
         onComplete?.(clamped);
