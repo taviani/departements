@@ -8,6 +8,7 @@ const MENU_ITEMS = [
   { id: 'list', label: 'Tous les départements', icon: 'list' },
   { id: 'random', label: 'Département au hasard', icon: 'shuffle' },
   { id: 'notifications', label: 'Notifications', icon: 'notifications-outline' },
+  { id: 'help', label: 'Aide', icon: 'help-circle-outline' },
   { id: 'legal', label: 'Informations légales', icon: 'document-text' },
 ];
 
@@ -18,6 +19,7 @@ export default function AppMenu({
   onFullList,
   onRandom,
   onNotifications,
+  onHelp,
   onLegal,
 }) {
   const handlers = {
@@ -25,6 +27,7 @@ export default function AppMenu({
     list: onFullList,
     random: onRandom,
     notifications: onNotifications,
+    help: onHelp,
     legal: onLegal,
   };
 

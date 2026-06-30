@@ -6,6 +6,7 @@ export const defaultNotificationSettings = {
   enabled: false,
   dailyDepartement: false,
   appUpdates: true,
+  departementChanges: false,
 };
 
 export const loadNotificationSettings = async () => {

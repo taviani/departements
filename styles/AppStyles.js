@@ -4,6 +4,9 @@ export const styles = StyleSheet.create({
   root: {
     flex: 1,
   },
+  gestureShell: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
@@ -148,6 +151,48 @@ export const styles = StyleSheet.create({
     color: '#444',
     marginBottom: 10,
   },
+  helpSteps: {
+    gap: 10,
+    marginBottom: 12,
+  },
+  helpStepRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  helpStepBadge: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#E3F2FD',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 1,
+  },
+  helpStepBadgeText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#2196F3',
+  },
+  helpStepText: {
+    flex: 1,
+    fontSize: 15,
+    lineHeight: 22,
+    color: '#444',
+  },
+  helpLinkButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 20,
+    paddingVertical: 12,
+  },
+  helpLinkButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2196F3',
+  },
   notificationStatusCard: {
     backgroundColor: '#f8f8f8',
     borderRadius: 12,
@@ -155,6 +200,10 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#e8e8e8',
+    gap: 14,
+  },
+  notificationStatusBlock: {
+    gap: 4,
   },
   notificationStatusLabel: {
     fontSize: 13,
@@ -165,6 +214,12 @@ export const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     color: '#333',
+  },
+  notificationStatusHint: {
+    fontSize: 13,
+    lineHeight: 18,
+    color: '#C62828',
+    marginTop: 4,
   },
   notificationSection: {
     marginTop: 8,
@@ -359,6 +414,11 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
   },
+  detailStripMatch: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#E91E63',
+  },
   detailStripCloseButton: {
     width: 64,
     height: 64,
@@ -367,6 +427,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f5f5f5',
+  },
+  locationHeart: {
+    marginLeft: 8,
   },
   list: {
     flex: 1,
@@ -413,5 +476,10 @@ export const styles = StyleSheet.create({
   itemRegion: {
     fontSize: 14,
     color: '#666',
+  },
+  itemMatch: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#E91E63',
   },
 });

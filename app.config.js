@@ -1,37 +1,29 @@
-const base = require('./app.json').expo;
+/**
+ * Bare workflow: ios/ and android/ are the source of truth for native config.
+ * app.json holds the full Expo manifest; this file forwards only JS/tooling fields
+ * so expo-doctor does not flag unsynced native properties.
+ */
+const NATIVE_MANAGED_KEYS = [
+  'ios',
+  'android',
+  'plugins',
+  'icon',
+  'scheme',
+  'userInterfaceStyle',
+  'splash',
+  'orientation',
+  'backgroundColor',
+  'primaryColor',
+  'notification',
+  'androidStatusBar',
+  'androidNavigationBar',
+  'locales',
+];
 
-module.exports = () => {
-  const profile = process.env.EAS_BUILD_PROFILE;
-  const isStoreBuild = profile === 'production' || profile === 'preview';
-
-  const iosInfoPlist = {
-    ITSAppUsesNonExemptEncryption: false,
-  };
-
-  if (!isStoreBuild) {
-    iosInfoPlist.NSLocalNetworkUsageDescription =
-      'This app needs access to your local network to connect to the development server.';
-    iosInfoPlist.NSBonjourServices = ['_expo._tcp', '_http._tcp'];
+module.exports = ({ config }) => {
+  const result = { ...config };
+  for (const key of NATIVE_MANAGED_KEYS) {
+    delete result[key];
   }
-
-  iosInfoPlist.NSUserNotificationsUsageDescription =
-    'Recevoir des rappels et des actualités sur les départements.';
-
-  const plugins = isStoreBuild
-    ? ['expo-notifications']
-    : ['expo-dev-client', 'expo-notifications'];
-
-  return {
-    expo: {
-      ...base,
-      plugins,
-      ios: {
-        ...base.ios,
-        infoPlist: iosInfoPlist,
-      },
-      android: {
-        ...base.android,
-      },
-    },
-  };
+  return result;
 };

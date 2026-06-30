@@ -6,12 +6,30 @@ import { getPrefectureName } from '../data/prefectures.js';
 
 let swipeLeftHandler;
 let swipeRightHandler;
+let swipeDownHandler;
 jest.mock('../hooks/useHorizontalSwipe', () => ({
-  useHorizontalSwipe: ({ onSwipeLeft, onSwipeRight }) => {
+  useHorizontalSwipe: ({ onSwipeLeft, onSwipeRight, onSwipeDown }) => {
     swipeLeftHandler = onSwipeLeft;
     swipeRightHandler = onSwipeRight;
+    swipeDownHandler = onSwipeDown;
     return {};
   },
+}));
+
+jest.mock('../hooks/useDepartementLocation', () => ({
+  useDepartementLocation: () => ({
+    currentDepartementCode: null,
+    locationPermission: 'undetermined',
+    matchCelebration: null,
+    isCurrentDepartement: () => false,
+    resolveCurrentDepartementCode: jest.fn(() => Promise.resolve(null)),
+    requestForegroundPermission: jest.fn(() => Promise.resolve('granted')),
+    requestBackgroundPermission: jest.fn(() => Promise.resolve('granted')),
+    refreshTracking: jest.fn(() => Promise.resolve('granted')),
+    refreshSettings: jest.fn(() => Promise.resolve({})),
+    celebrateMatch: jest.fn(),
+    clearMatchCelebration: jest.fn(),
+  }),
 }));
 
 jest.mock('../components/FranceMap', () => {
@@ -42,6 +60,7 @@ describe('App QA', () => {
   beforeEach(() => {
     swipeLeftHandler = undefined;
     swipeRightHandler = undefined;
+    swipeDownHandler = undefined;
     jest.spyOn(Math, 'random').mockReturnValue(0);
   });
 
@@ -92,7 +111,7 @@ describe('App QA', () => {
 
     expect(screen.getByText('Politique de confidentialité')).toBeTruthy();
     expect(screen.getByText('Conditions d\'utilisation')).toBeTruthy();
-    expect(screen.getByText(/ne collecte, ne stocke et ne transmet aucune donnée personnelle/)).toBeTruthy();
+    expect(screen.getByText(/ne crée pas de compte utilisateur/)).toBeTruthy();
   });
 
   it('opens notification settings from the header menu', () => {
@@ -101,9 +120,32 @@ describe('App QA', () => {
     fireEvent.press(screen.getByLabelText('Ouvrir le menu'));
     fireEvent.press(screen.getByLabelText('Notifications'));
 
-    expect(screen.getByText('Autorisation système')).toBeTruthy();
+    expect(screen.getByText('Autorisations système')).toBeTruthy();
+    expect(screen.getByText('Localisation')).toBeTruthy();
     expect(screen.getByLabelText('Activer les notifications')).toBeTruthy();
     expect(screen.getByLabelText('Département du jour')).toBeTruthy();
+    expect(screen.getByLabelText('Passage de département')).toBeTruthy();
+  });
+
+  it('opens help from the header menu', () => {
+    render(<App />);
+
+    fireEvent.press(screen.getByLabelText('Ouvrir le menu'));
+    fireEvent.press(screen.getByLabelText('Aide'));
+
+    expect(screen.getByText('Alertes de passage de département')).toBeTruthy();
+    expect(screen.getByText('Que choisir dans les pop-ups ?')).toBeTruthy();
+  });
+
+  it('opens help from the notifications screen', () => {
+    render(<App />);
+
+    fireEvent.press(screen.getByLabelText('Ouvrir le menu'));
+    fireEvent.press(screen.getByLabelText('Notifications'));
+    fireEvent.press(screen.getByLabelText("Consulter l'aide"));
+
+    expect(screen.getByText('Que choisir dans les pop-ups ?')).toBeTruthy();
+    expect(screen.queryByText('Autorisations système')).toBeNull();
   });
 
   it('shows the full list from the search overlay', () => {
