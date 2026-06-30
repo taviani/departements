@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Keyboard,
   SafeAreaView,
@@ -49,7 +49,18 @@ export default function App() {
       return foreground;
     }
     return location.requestBackgroundPermission();
-  }, [location]);
+  }, [location.requestForegroundPermission, location.requestBackgroundPermission]);
+
+  const handleGoToDepartementCodeRef = useRef(explorer.handleGoToDepartementCode);
+  handleGoToDepartementCodeRef.current = explorer.handleGoToDepartementCode;
+
+  useEffect(() => {
+    if (!location.matchCelebration?.number) {
+      return;
+    }
+
+    handleGoToDepartementCodeRef.current(location.matchCelebration.number);
+  }, [location.matchCelebration?.number]);
   useEffect(() => {
     SplashScreen.hideAsync().catch(() => {});
     ensureNotificationChannels().catch(() => {});
@@ -65,15 +76,7 @@ export default function App() {
         location.celebrateMatch(code);
       }
     });
-  }, [location]);
-
-  useEffect(() => {
-    if (!location.matchCelebration?.number) {
-      return;
-    }
-
-    explorer.handleGoToDepartementCode(location.matchCelebration.number);
-  }, [explorer, location.matchCelebration?.number]);
+  }, [location.resolveCurrentDepartementCode, location.celebrateMatch]);
 
   const swipeHandlers = useHorizontalSwipe({
     onSwipeLeft: explorer.handleRandomRefresh,
@@ -169,7 +172,7 @@ export default function App() {
 
       {splashVisible && <AnimatedSplash onFinish={handleSplashFinish} />}
 
-      {!splashVisible && location.matchCelebration ? (
+      {!splashVisible && location.matchCelebration && !notificationsVisible ? (
         <MatchSplash
           departement={location.matchCelebration}
           onFinish={location.clearMatchCelebration}

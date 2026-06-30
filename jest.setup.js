@@ -30,6 +30,10 @@ jest.mock('expo-task-manager', () => ({
   isAvailableAsync: jest.fn(() => Promise.resolve(true)),
 }));
 
+jest.mock('expo', () => ({
+  isRunningInExpoGo: jest.fn(() => false),
+}));
+
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock')
 );

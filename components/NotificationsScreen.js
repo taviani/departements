@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Alert,
+  InteractionManager,
   Linking,
   Modal,
   SafeAreaView,
@@ -71,6 +72,12 @@ const showExpoGoLimitedTrackingAlert = () => {
   );
 };
 
+const deferAfterModal = (callback) => {
+  InteractionManager.runAfterInteractions(() => {
+    setTimeout(callback, 300);
+  });
+};
+
 export default function NotificationsScreen({
   visible,
   onClose,
@@ -101,13 +108,21 @@ export default function NotificationsScreen({
   const handleDepartementChanges = async (enabled) => {
     try {
       if (enabled) {
+        onClose?.();
+
+        await new Promise((resolve) => {
+          deferAfterModal(resolve);
+        });
+
         const status = await onRequestLocationAccess?.();
         if (status !== 'granted') {
           const [{ foreground }, backgroundRequired] = await Promise.all([
             refreshPermission(),
             canUseBackgroundLocationUpdates(),
           ]);
-          showLocationPermissionAlert(foreground, backgroundRequired);
+          deferAfterModal(() => {
+            showLocationPermissionAlert(foreground, backgroundRequired);
+          });
           return;
         }
       }
@@ -118,16 +133,18 @@ export default function NotificationsScreen({
       if (enabled) {
         const backgroundRequired = await canUseBackgroundLocationUpdates();
         if (!backgroundRequired) {
-          showExpoGoLimitedTrackingAlert();
+          deferAfterModal(showExpoGoLimitedTrackingAlert);
         }
       }
     } catch (error) {
       console.error('Failed to update department change alerts:', error);
-      Alert.alert(
-        'Activation impossible',
-        'Une erreur est survenue lors de l\'activation du suivi. Réessayez ou consultez l\'aide.',
-        [{ text: 'OK' }]
-      );
+      deferAfterModal(() => {
+        Alert.alert(
+          'Activation impossible',
+          'Une erreur est survenue lors de l\'activation du suivi. Réessayez ou consultez l\'aide.',
+          [{ text: 'OK' }]
+        );
+      });
     }
   };
 

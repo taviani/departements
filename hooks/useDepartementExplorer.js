@@ -115,12 +115,10 @@ export function useDepartementExplorer() {
     setSearchOverlayVisible(false);
     setSelectedDepartement((current) => {
       const next = pickRandom(current);
-      if (isDetailView) {
-        setZoomedCode(next.number);
-      }
+      setZoomedCode((zoomed) => (zoomed != null ? next.number : zoomed));
       return next;
     });
-  }, [isDetailView]);
+  }, []);
 
   const handleGoToDepartementCode = useCallback(
     (code) => {
