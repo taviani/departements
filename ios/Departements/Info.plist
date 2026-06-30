@@ -60,6 +60,12 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>This app needs access to your local network to connect to the development server.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Votre position permet d&apos;afficher le département où vous vous trouvez et de vous alerter lorsque vous changez de département.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Votre position permet de vous alerter lorsque vous changez de département, même lorsque l&apos;application est en arrière-plan.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Votre position permet d&apos;afficher le département où vous vous trouvez sur la carte.</string>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Recevoir des rappels et des actualités sur les départements.</string>
 	<key>RCTNewArchEnabled</key>
@@ -90,5 +96,9 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 </dict>
 </plist>

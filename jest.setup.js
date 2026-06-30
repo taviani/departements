@@ -8,6 +8,26 @@ jest.mock('expo-splash-screen', () => ({
 jest.mock('expo-notifications', () => ({
   getPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
   requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  setNotificationHandler: jest.fn(),
+  scheduleNotificationAsync: jest.fn(() => Promise.resolve('notification-id')),
+  setNotificationChannelAsync: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock('expo-location', () => ({
+  Accuracy: { Balanced: 3 },
+  getForegroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  getBackgroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  requestForegroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  requestBackgroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  watchPositionAsync: jest.fn(() => Promise.resolve({ remove: jest.fn() })),
+  hasStartedLocationUpdatesAsync: jest.fn(() => Promise.resolve(false)),
+  startLocationUpdatesAsync: jest.fn(() => Promise.resolve()),
+  stopLocationUpdatesAsync: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock('expo-task-manager', () => ({
+  defineTask: jest.fn(),
+  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
 }));
 
 jest.mock('@react-native-async-storage/async-storage', () =>

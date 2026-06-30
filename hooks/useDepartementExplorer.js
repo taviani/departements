@@ -122,6 +122,23 @@ export function useDepartementExplorer() {
     });
   }, [isDetailView]);
 
+  const handleGoToDepartementCode = useCallback(
+    (code) => {
+      const departement = getDepartementByCode(code);
+      if (!departement) {
+        return;
+      }
+
+      Keyboard.dismiss();
+      setSearchOverlayVisible(false);
+      setSelectedDepartement(departement);
+      if (isDetailView) {
+        setZoomedCode(departement.number);
+      }
+    },
+    [isDetailView]
+  );
+
   return {
     searchQuery,
     searchOverlayVisible,
@@ -143,5 +160,6 @@ export function useDepartementExplorer() {
     handleListToggle,
     handleMapDepartmentPress,
     handleRandomRefresh,
+    handleGoToDepartementCode,
   };
 }

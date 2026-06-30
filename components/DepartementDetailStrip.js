@@ -2,12 +2,14 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getPrefectureName } from '../data/prefectures';
-import { getDetailStripSubtitle } from '../utils/departementCopy';
+import { getDetailStripSubtitle, CURRENT_DEPARTEMENT_MATCH_LABEL } from '../utils/departementCopy';
+import LocationHeart from './LocationHeart';
 import { styles } from '../styles/AppStyles';
 
 export default function DepartementDetailStrip({
   item,
   isDetailView,
+  isCurrentLocation,
   onPress,
   onClose,
 }) {
@@ -42,14 +44,17 @@ export default function DepartementDetailStrip({
             {item.name}
           </Text>
           <Text
-            style={styles.detailStripRegion}
+            style={
+              isCurrentLocation ? styles.detailStripMatch : styles.detailStripRegion
+            }
             numberOfLines={1}
             adjustsFontSizeToFit
             minimumFontScale={0.75}
           >
-            {subtitle}
+            {isCurrentLocation ? CURRENT_DEPARTEMENT_MATCH_LABEL : subtitle}
           </Text>
         </View>
+        <LocationHeart visible={isCurrentLocation} size={30} />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.detailStripCloseButton}

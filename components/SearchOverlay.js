@@ -26,6 +26,7 @@ export default function SearchOverlay({
   onClose,
   onListToggle,
   onDepartementPress,
+  isCurrentDepartement,
 }) {
   const inputRef = useRef(null);
 
@@ -108,7 +109,11 @@ export default function SearchOverlay({
             <FlatList
               data={filteredDepartements}
               renderItem={({ item }) => (
-                <DepartementItem item={item} onPress={onDepartementPress} />
+                <DepartementItem
+                  item={item}
+                  onPress={onDepartementPress}
+                  isCurrentLocation={isCurrentDepartement?.(item.number)}
+                />
               )}
               keyExtractor={(item) => item.number}
               style={styles.list}

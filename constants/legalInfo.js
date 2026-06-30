@@ -22,10 +22,11 @@ export const legalSections = [
   {
     title: 'Politique de confidentialité',
     paragraphs: [
-      `${legalMeta.appName} ne collecte, ne stocke et ne transmet aucune donnée personnelle.`,
-      "L'application fonctionne sans compte utilisateur. La recherche et la sélection de départements sont traitées localement sur votre appareil.",
+      `${legalMeta.appName} ne crée pas de compte utilisateur et ne transmet pas vos données à des serveurs tiers.`,
+      "La recherche et la sélection de départements sont traitées localement sur votre appareil.",
+      "Si vous activez la localisation, la position GPS est utilisée uniquement sur l'appareil pour afficher un indicateur sur votre département actuel et, le cas échéant, pour vous notifier lorsque vous changez de département. Ces données ne sont pas envoyées à l'éditeur.",
       "Aucune publicité, aucun traceur publicitaire et aucun outil d'analyse tiers n'est intégré à l'application.",
-      "En mode développement (Expo Go), le réseau local peut être utilisé uniquement pour charger le code de l'application depuis votre ordinateur ; aucune donnée d'usage n'est envoyée à l'éditeur.",
+      "En mode développement (Expo Go), le réseau local peut être utilisé uniquement pour charger le code de l'application depuis votre ordinateur.",
       `Pour toute question relative à la confidentialité : ${legalMeta.contactEmail}`,
     ],
   },

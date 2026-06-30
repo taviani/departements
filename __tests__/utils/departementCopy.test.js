@@ -15,7 +15,7 @@ describe('departementCopy', () => {
 
   it('returns swipe hints as the default subtitle', () => {
     expect(getHeaderSubtitle({ isDetailView: false })).toBe(
-      'Glissez à droite pour rechercher · à gauche pour un hasard'
+      'Glissez à droite pour rechercher · à gauche pour un hasard · vers le bas pour le vôtre'
     );
   });
 
