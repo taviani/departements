@@ -67,7 +67,7 @@ jobs:
           BUILD_PLATFORM: ${{ steps.config.outputs.platform }}
         run: |
           set -euo pipefail
-          npx eas build \
+          npx eas-cli@latest build \
             --platform "$BUILD_PLATFORM" \
             --profile "$BUILD_PROFILE" \
             --non-interactive \

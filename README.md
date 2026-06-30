@@ -87,7 +87,7 @@ npm run build:all
 
 **After a PR is merged to `main`**, the **Deploy iOS to TestFlight** workflow runs automatically: EAS builds the `production` profile and uploads to TestFlight. Processing on Apple’s side usually takes 10–15 minutes.
 
-If a new merge lands on `main` while a deploy is still running, GitHub Actions cancels the previous job **and** the workflow cancels any in-flight EAS iOS `production` builds before starting the new one (`scripts/cancel-stale-eas-ios-deploys.js`). EAS Submit has no public cancel API — a TestFlight upload already in progress may still finish.
+If a new merge lands on `main` while a deploy is still running, GitHub Actions cancels the previous workflow job (`concurrency` on `main`). In-flight EAS builds on Expo’s servers are not cancelled automatically.
 
 **Manual builds (no TestFlight):** GitHub → Actions → **EAS Build** → **Run workflow**
 
