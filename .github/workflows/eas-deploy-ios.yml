@@ -29,12 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Cancel stale EAS iOS builds
-        run: node scripts/cancel-stale-eas-ios-deploys.js
-
       - name: Build iOS and submit to TestFlight
         run: |
-          npx eas build \
+          npx eas-cli@latest build \
             --platform ios \
             --profile production \
             --non-interactive \
@@ -50,6 +47,5 @@ jobs:
             echo "- Commit: [\`${{ github.sha }}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})"
             echo "- Profile: \`production\`"
             echo
-            echo "Previous in-flight EAS builds on \`main\` are cancelled before each deploy."
             echo "Open [App Store Connect → TestFlight](https://appstoreconnect.apple.com/apps) once processing completes (~10–15 min)."
           } >> "$GITHUB_STEP_SUMMARY"
