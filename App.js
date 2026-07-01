@@ -21,6 +21,7 @@ import { useDepartementExplorer } from './hooks/useDepartementExplorer';
 import { useDepartementLocation } from './hooks/useDepartementLocation';
 import { useHorizontalSwipe } from './hooks/useHorizontalSwipe';
 import { ensureNotificationChannels } from './utils/notificationChannels';
+import { notifyDepartementChange } from './utils/departementGeofenceNotifications';
 import { styles } from './styles/AppStyles';
 
 Notifications.setNotificationHandler({
@@ -40,8 +41,35 @@ export default function App() {
   const [legalVisible, setLegalVisible] = useState(false);
   const [helpVisible, setHelpVisible] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
-  const explorer = useDepartementExplorer();
   const location = useDepartementLocation();
+
+  const celebrateIfCurrentDepartement = useCallback(
+    async (code) => {
+      if (!code || location.matchCelebration?.number === code) {
+        return;
+      }
+
+      if (location.isCurrentDepartement(code)) {
+        location.celebrateMatch(code);
+        return;
+      }
+
+      const currentCode = await location.resolveCurrentDepartementCode();
+      if (currentCode === code) {
+        location.celebrateMatch(code);
+      }
+    },
+    [
+      location.celebrateMatch,
+      location.isCurrentDepartement,
+      location.matchCelebration?.number,
+      location.resolveCurrentDepartementCode,
+    ]
+  );
+
+  const explorer = useDepartementExplorer({
+    onDepartementDisplayed: celebrateIfCurrentDepartement,
+  });
 
   const handleRequestLocationAccess = useCallback(async () => {
     const foreground = await location.requestForegroundPermission();
@@ -61,6 +89,7 @@ export default function App() {
 
     handleGoToDepartementCodeRef.current(location.matchCelebration.number);
   }, [location.matchCelebration?.number]);
+
   useEffect(() => {
     SplashScreen.hideAsync().catch(() => {});
     ensureNotificationChannels().catch(() => {});
@@ -141,6 +170,10 @@ export default function App() {
         onClose={() => setNotificationsVisible(false)}
         onRequestLocationAccess={handleRequestLocationAccess}
         onRefreshLocationTracking={location.refreshTracking}
+        onPreviewDepartementChange={async () => {
+          await notifyDepartementChange('75', { preview: true });
+          location.celebrateMatch('75');
+        }}
         onOpenHelp={() => {
           setNotificationsVisible(false);
           setHelpVisible(true);

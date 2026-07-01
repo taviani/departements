@@ -6,7 +6,7 @@ import { pickRandomDepartement } from '../utils/randomDepartement';
 
 const pickRandom = (current) => pickRandomDepartement(departements, current);
 
-export function useDepartementExplorer() {
+export function useDepartementExplorer({ onDepartementDisplayed } = {}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchOverlayVisible, setSearchOverlayVisible] = useState(false);
   const [selectedDepartement, setSelectedDepartement] = useState(() =>
@@ -52,8 +52,9 @@ export function useDepartementExplorer() {
       if (isDetailView) {
         setZoomedCode(departement.number);
       }
+      onDepartementDisplayed?.(departement.number);
     },
-    [isDetailView]
+    [isDetailView, onDepartementDisplayed]
   );
 
   const handleMapZoomChange = useCallback((zoomed) => {
@@ -106,8 +107,9 @@ export function useDepartementExplorer() {
       if (isDetailView) {
         setZoomedCode(code);
       }
+      onDepartementDisplayed?.(code);
     },
-    [isDetailView]
+    [isDetailView, onDepartementDisplayed]
   );
 
   const handleRandomRefresh = useCallback(() => {
@@ -116,9 +118,10 @@ export function useDepartementExplorer() {
     setSelectedDepartement((current) => {
       const next = pickRandom(current);
       setZoomedCode((zoomed) => (zoomed != null ? next.number : zoomed));
+      onDepartementDisplayed?.(next.number);
       return next;
     });
-  }, []);
+  }, [onDepartementDisplayed]);
 
   const handleGoToDepartementCode = useCallback(
     (code) => {

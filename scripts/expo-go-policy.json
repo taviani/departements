@@ -10,6 +10,7 @@
     "@expo/vector-icons",
     "expo",
     "expo-asset",
+    "expo-av",
     "expo-dev-client",
     "expo-font",
     "expo-location",

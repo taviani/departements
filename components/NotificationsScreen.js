@@ -12,7 +12,9 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 import { ACCENT_COLOR } from '../constants/mapTheme';
+import { showNotificationPreviewButton } from '../constants/featureFlags';
 import { useNotificationSettings } from '../hooks/useNotificationSettings';
 import { canUseBackgroundLocationUpdates } from '../utils/backgroundLocationSupport';
 import { HelpLinkButton } from './HelpScreen';
@@ -83,6 +85,7 @@ export default function NotificationsScreen({
   onClose,
   onRequestLocationAccess,
   onRefreshLocationTracking,
+  onPreviewDepartementChange,
   onOpenHelp,
 }) {
   const {
@@ -151,6 +154,49 @@ export default function NotificationsScreen({
   const handleOpenSettings = async () => {
     await refreshPermission();
     await Linking.openSettings();
+  };
+
+  const handlePreviewNotification = async () => {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let status = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const requested = await Notifications.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowBadge: true,
+          allowSound: true,
+        },
+      });
+      status = requested.status;
+      await refreshPermission();
+    }
+
+    if (status !== 'granted') {
+      Alert.alert(
+        'Notifications désactivées',
+        'Autorisez les notifications pour prévisualiser une alerte de passage.',
+        [
+          { text: 'Plus tard', style: 'cancel' },
+          { text: 'Ouvrir les réglages', onPress: () => Linking.openSettings() },
+        ]
+      );
+      return;
+    }
+
+    onClose?.();
+    deferAfterModal(async () => {
+      try {
+        await onPreviewDepartementChange?.();
+      } catch (error) {
+        console.error('Preview notification failed:', error);
+        Alert.alert(
+          'Prévisualisation impossible',
+          'La notification test n\'a pas pu être envoyée.',
+          [{ text: 'OK' }]
+        );
+      }
+    });
   };
 
   const categoriesDisabled = !settings.enabled || loading;
@@ -237,6 +283,19 @@ export default function NotificationsScreen({
               disabled={categoriesDisabled}
             />
           </View>
+
+          {showNotificationPreviewButton ? (
+            <TouchableOpacity
+              style={styles.notificationSystemButton}
+              onPress={handlePreviewNotification}
+              accessibilityLabel="Prévisualiser une alerte de passage"
+            >
+              <Ionicons name="heart-outline" size={20} color={ACCENT_COLOR} />
+              <Text style={styles.notificationSystemButtonText}>
+                Prévisualiser une alerte de passage
+              </Text>
+            </TouchableOpacity>
+          ) : null}
 
           <TouchableOpacity
             style={styles.notificationSystemButton}
