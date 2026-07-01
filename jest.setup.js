@@ -5,6 +5,22 @@ jest.mock('expo-splash-screen', () => ({
   hideAsync: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('expo-av', () => ({
+  Audio: {
+    setAudioModeAsync: jest.fn(() => Promise.resolve()),
+    Sound: {
+      createAsync: jest.fn(() =>
+        Promise.resolve({
+          sound: {
+            unloadAsync: jest.fn(() => Promise.resolve()),
+            setOnPlaybackStatusUpdate: jest.fn(),
+          },
+        })
+      ),
+    },
+  },
+}));
+
 jest.mock('expo-notifications', () => ({
   getPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
   requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),

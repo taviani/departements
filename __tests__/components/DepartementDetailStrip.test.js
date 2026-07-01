@@ -6,7 +6,7 @@ import { departements } from '../../data/departements';
 describe('DepartementDetailStrip', () => {
   const paris = departements.find((dept) => dept.number === '75');
 
-  it('shows a match label when viewing the current department', () => {
+  it('shows the prefecture and location pin when viewing the current department', () => {
     render(
       <DepartementDetailStrip
         item={paris}
@@ -17,8 +17,8 @@ describe('DepartementDetailStrip', () => {
       />
     );
 
-    expect(screen.getByText("C'est un match !")).toBeTruthy();
-    expect(screen.queryByText(/Préfecture/)).toBeNull();
+    expect(screen.getByText(/Préfecture/)).toBeTruthy();
+    expect(screen.getByLabelText('Vous êtes ici 📍')).toBeTruthy();
   });
 
   it('shows the prefecture subtitle for other departments', () => {
@@ -33,6 +33,6 @@ describe('DepartementDetailStrip', () => {
     );
 
     expect(screen.getByText(/Préfecture/)).toBeTruthy();
-    expect(screen.queryByText("C'est un match !")).toBeNull();
+    expect(screen.queryByLabelText('Vous êtes ici 📍')).toBeNull();
   });
 });

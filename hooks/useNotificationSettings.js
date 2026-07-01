@@ -127,7 +127,13 @@ export function useNotificationSettings(visible) {
   const setEnabled = useCallback(
     async (enabled) => {
       if (enabled) {
-        const { status } = await Notifications.requestPermissionsAsync();
+        const { status } = await Notifications.requestPermissionsAsync({
+          ios: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+          },
+        });
         setPermissionStatus(status);
         if (status !== 'granted') {
           await updateSettings({ enabled: false });

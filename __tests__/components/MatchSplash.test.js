@@ -21,7 +21,7 @@ describe('MatchSplash', () => {
       />
     );
 
-    expect(screen.getByText("C'est un match !")).toBeTruthy();
+    expect(screen.getByText('Vous êtes ici')).toBeTruthy();
     expect(screen.getByText('75')).toBeTruthy();
     expect(screen.getByText('Paris')).toBeTruthy();
 

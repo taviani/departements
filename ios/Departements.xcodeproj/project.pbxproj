@@ -14,6 +14,7 @@
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		D5DEEFA863C4C89D4B30927C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */; };
 		E8A1C4F12F8B2D3A00A1B2C3 /* departement_match.wav in Resources */ = {isa = PBXBuildFile; fileRef = E8A1C4F02F8B2D3A00A1B2C3 /* departement_match.wav */; };
+		E8A1C4F32F8B2D3A00A1B2C4 /* departement_match.caf in Resources */ = {isa = PBXBuildFile; fileRef = E8A1C4F22F8B2D3A00A1B2C4 /* departement_match.caf */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Departements/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Departements-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Departements-Bridging-Header.h"; path = "Departements/Departements-Bridging-Header.h"; sourceTree = "<group>"; };
 		E8A1C4F02F8B2D3A00A1B2C3 /* departement_match.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = departement_match.wav; path = Departements/departement_match.wav; sourceTree = "<group>"; };
+		E8A1C4F22F8B2D3A00A1B2C4 /* departement_match.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = departement_match.caf; path = Departements/departement_match.caf; sourceTree = "<group>"; };
 		F6ED1AA5CF233FE9318219D3 /* libPods-Departements.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Departements.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -57,6 +59,7 @@
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				03CFAC8D2D0EF965E6A25347 /* PrivacyInfo.xcprivacy */,
 				E8A1C4F02F8B2D3A00A1B2C3 /* departement_match.wav */,
+				E8A1C4F22F8B2D3A00A1B2C4 /* departement_match.caf */,
 			);
 			name = Departements;
 			sourceTree = "<group>";
@@ -201,6 +204,7 @@
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				D5DEEFA863C4C89D4B30927C /* PrivacyInfo.xcprivacy in Resources */,
 				E8A1C4F12F8B2D3A00A1B2C3 /* departement_match.wav in Resources */,
+				E8A1C4F32F8B2D3A00A1B2C4 /* departement_match.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

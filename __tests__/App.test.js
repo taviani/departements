@@ -7,6 +7,27 @@ import { getPrefectureName } from '../data/prefectures.js';
 let swipeLeftHandler;
 let swipeRightHandler;
 let swipeDownHandler;
+let mockLocationState = {
+  currentDepartementCode: null,
+  locationPermission: 'undetermined',
+  matchCelebration: null,
+};
+
+const mockCelebrateMatch = jest.fn((code) => {
+  const departement = departements.find((item) => item.number === code);
+  if (!departement) {
+    return;
+  }
+  mockLocationState.matchCelebration = {
+    number: departement.number,
+    name: departement.name,
+  };
+});
+
+const mockClearMatchCelebration = jest.fn(() => {
+  mockLocationState.matchCelebration = null;
+});
+
 jest.mock('../hooks/useHorizontalSwipe', () => ({
   useHorizontalSwipe: ({ onSwipeLeft, onSwipeRight, onSwipeDown }) => {
     swipeLeftHandler = onSwipeLeft;
@@ -16,19 +37,38 @@ jest.mock('../hooks/useHorizontalSwipe', () => ({
   },
 }));
 
+jest.mock('../components/AnimatedSplash', () => {
+  const React = require('react');
+
+  return ({ onFinish }) => {
+    React.useEffect(() => {
+      onFinish?.();
+    }, [onFinish]);
+
+    return null;
+  };
+});
+
 jest.mock('../hooks/useDepartementLocation', () => ({
   useDepartementLocation: () => ({
-    currentDepartementCode: null,
-    locationPermission: 'undetermined',
-    matchCelebration: null,
-    isCurrentDepartement: () => false,
-    resolveCurrentDepartementCode: jest.fn(() => Promise.resolve(null)),
+    currentDepartementCode: mockLocationState.currentDepartementCode,
+    locationPermission: mockLocationState.locationPermission,
+    matchCelebration: mockLocationState.matchCelebration,
+    isCurrentDepartement: (code) =>
+      Boolean(
+        code &&
+          mockLocationState.currentDepartementCode &&
+          code === mockLocationState.currentDepartementCode
+      ),
+    resolveCurrentDepartementCode: jest.fn(() =>
+      Promise.resolve(mockLocationState.currentDepartementCode)
+    ),
     requestForegroundPermission: jest.fn(() => Promise.resolve('granted')),
     requestBackgroundPermission: jest.fn(() => Promise.resolve('granted')),
     refreshTracking: jest.fn(() => Promise.resolve('granted')),
     refreshSettings: jest.fn(() => Promise.resolve({})),
-    celebrateMatch: jest.fn(),
-    clearMatchCelebration: jest.fn(),
+    celebrateMatch: mockCelebrateMatch,
+    clearMatchCelebration: mockClearMatchCelebration,
   }),
 }));
 
@@ -61,6 +101,13 @@ describe('App QA', () => {
     swipeLeftHandler = undefined;
     swipeRightHandler = undefined;
     swipeDownHandler = undefined;
+    mockLocationState = {
+      currentDepartementCode: null,
+      locationPermission: 'undetermined',
+      matchCelebration: null,
+    };
+    mockCelebrateMatch.mockClear();
+    mockClearMatchCelebration.mockClear();
     jest.spyOn(Math, 'random').mockReturnValue(0);
   });
 
@@ -244,5 +291,44 @@ describe('App QA', () => {
     const nextIndex = Math.floor(0.5 * departements.length);
     expect(screen.getByText(departements[nextIndex].name)).toBeTruthy();
     expect(departements[nextIndex].name).not.toBe(initialName);
+  });
+
+  it('does not celebrate when the displayed department already matches geolocation', () => {
+    mockLocationState.currentDepartementCode = departements[0].number;
+
+    render(<App />);
+
+    expect(mockCelebrateMatch).not.toHaveBeenCalled();
+  });
+
+  it('celebrates a match when random picks the current department', () => {
+    const targetIndex = 5;
+    mockLocationState.currentDepartementCode = departements[targetIndex].number;
+
+    render(<App />);
+    expect(mockCelebrateMatch).not.toHaveBeenCalled();
+
+    jest.spyOn(Math, 'random').mockReturnValue(targetIndex / departements.length);
+    act(() => {
+      swipeLeftHandler();
+    });
+
+    expect(mockCelebrateMatch).toHaveBeenCalledWith(departements[targetIndex].number);
+  });
+
+  it('celebrates a match when search selects the current department', () => {
+    mockLocationState.currentDepartementCode = '75';
+
+    render(<App />);
+    mockCelebrateMatch.mockClear();
+
+    openSearchOverlay();
+    fireEvent.changeText(
+      screen.getByPlaceholderText('Rechercher par numéro ou nom...'),
+      'Paris'
+    );
+    fireEvent.press(screen.getByText('Paris'));
+
+    expect(mockCelebrateMatch).toHaveBeenCalledWith('75');
   });
 });
