@@ -2,6 +2,12 @@ export const MAP_FILL = {
   default: '#f0f0f0',
   highlight: '#90CAF9',
   selected: '#2196F3',
+  visited: {
+    1: '#E8F5E9',
+    2: '#C8E6C9',
+    3: '#81C784',
+    4: '#43A047',
+  },
 };
 
 export const PREFECTURE_MARKER = {

@@ -80,4 +80,13 @@ export const helpSections = [
       "Autres catégories : « Département du jour » et « Actualités de l'application » seront disponibles dans de futures versions ; seul « Passage de département » envoie des alertes liées à la position aujourd'hui.",
     ],
   },
+  {
+    title: 'Historique de visites',
+    paragraphs: [
+      "Activez la localisation pour enregistrer automatiquement vos passages de département. L'app reste utilisable sans : l'historique reste vide tant que le GPS n'est pas autorisé.",
+      "Seuls le code département et les horaires sont stockés sur votre appareil. Aucune coordonnée GPS n'est conservée dans l'historique.",
+      "« Toujours autoriser » est recommandé pour un suivi complet en déplacement, comme pour les alertes de passage.",
+      "Export et suppression de l'historique : page Mon parcours (menu ☰).",
+    ],
+  },
 ];

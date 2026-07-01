@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 import * as Location from 'expo-location';
 import {
   BACKGROUND_LOCATION_OPTIONS,
@@ -10,6 +11,15 @@ import { getDepartementByCode } from '../data/departementCatalog';
 import { loadNotificationSettings } from '../utils/notificationStorage';
 import { processLocationSample } from '../utils/departementGeofence';
 import { notifyDepartementChange } from '../utils/departementGeofenceNotifications';
+import { shouldRunBackgroundGeofence } from '../utils/geofenceTrackingPolicy';
+import {
+  getLocationPermissionLevel,
+} from '../utils/locationPermissionLevel';
+import {
+  handleVisitHistoryForLocationSample,
+  onAppBackgrounded,
+  onPermissionRevoked,
+} from '../utils/visitHistory';
 
 const startBackgroundUpdates = async () => {
   const supported = await canUseBackgroundLocationUpdates();
@@ -91,13 +101,22 @@ export function useDepartementLocation() {
   }, []);
 
   const handleSample = useCallback(async (latitude, longitude, accuracy) => {
-    const { currentDepartementCode: code, changedDepartementCode } =
-      await processLocationSample(latitude, longitude, accuracy);
+    const {
+      currentDepartementCode: code,
+      changedDepartementCode,
+      previousDepartementCode,
+    } = await processLocationSample(latitude, longitude, accuracy);
 
     setCurrentDepartementCode(code);
 
-    if (changedDepartementCode) {
-      triggerMatchCelebration(changedDepartementCode);
+    try {
+      await handleVisitHistoryForLocationSample({
+        currentDepartementCode: code,
+        changedDepartementCode,
+        previousDepartementCode,
+      });
+    } catch (error) {
+      console.warn('Visit history recording failed:', error);
     }
 
     const settings = settingsRef.current ?? (await refreshSettings());
@@ -163,23 +182,24 @@ export function useDepartementLocation() {
     }
 
     const settings = await refreshSettings();
-    if (
-      settings.enabled &&
-      settings.departementChanges &&
-      watchSessionRef.current === session
-    ) {
-      const background = await Location.getBackgroundPermissionsAsync();
-      if (background.status === 'granted') {
-        await startBackgroundUpdates();
+    if (watchSessionRef.current === session) {
+      const runBackground = await shouldRunBackgroundGeofence();
+      if (runBackground) {
+        const background = await Location.getBackgroundPermissionsAsync();
+        if (background.status === 'granted') {
+          await startBackgroundUpdates();
+        }
       }
     }
   }, [handleSample, refreshSettings]);
 
   const syncTracking = useCallback(async () => {
     const foreground = await Location.getForegroundPermissionsAsync();
+    const background = await Location.getBackgroundPermissionsAsync();
     setLocationPermission(foreground.status);
 
     if (foreground.status !== 'granted') {
+      await onPermissionRevoked();
       await stopWatching();
       setCurrentDepartementCode(null);
       return foreground.status;
@@ -219,8 +239,8 @@ export function useDepartementLocation() {
     try {
       const { status } = await Location.requestBackgroundPermissionsAsync();
       if (status === 'granted') {
-        const settings = await refreshSettings();
-        if (settings.enabled && settings.departementChanges) {
+        const runBackground = await shouldRunBackgroundGeofence();
+        if (runBackground) {
           await startBackgroundUpdates();
         }
       }
@@ -239,6 +259,36 @@ export function useDepartementLocation() {
       stopWatching();
     };
   }, [refreshSettings, syncTracking, stopWatching]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async (nextState) => {
+      if (nextState !== 'active') {
+        const [foreground, background] = await Promise.all([
+          Location.getForegroundPermissionsAsync(),
+          Location.getBackgroundPermissionsAsync(),
+        ]);
+        const level = getLocationPermissionLevel(
+          foreground.status,
+          background.status
+        );
+        if (level === 'foreground') {
+          await onAppBackgrounded();
+        }
+        return;
+      }
+
+      const foreground = await Location.getForegroundPermissionsAsync();
+      setLocationPermission(foreground.status);
+
+      if (foreground.status !== 'granted') {
+        await onPermissionRevoked();
+        await stopWatching();
+        setCurrentDepartementCode(null);
+      }
+    });
+
+    return () => subscription.remove();
+  }, [stopWatching]);
 
   const isCurrentDepartement = useCallback(
     (code) => Boolean(code && currentDepartementCode && code === currentDepartementCode),
@@ -263,12 +313,21 @@ export function useDepartementLocation() {
         accuracy: Location.Accuracy.Balanced,
       });
       const { latitude, longitude, accuracy } = position.coords;
-      const { currentDepartementCode: code } = await processLocationSample(
-        latitude,
-        longitude,
-        accuracy
-      );
+      const {
+        currentDepartementCode: code,
+        changedDepartementCode,
+        previousDepartementCode,
+      } = await processLocationSample(latitude, longitude, accuracy);
       setCurrentDepartementCode(code);
+      try {
+        await handleVisitHistoryForLocationSample({
+          currentDepartementCode: code,
+          changedDepartementCode,
+          previousDepartementCode,
+        });
+      } catch (error) {
+        console.warn('Visit history recording failed:', error);
+      }
       return code;
     } catch {
       return null;

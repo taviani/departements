@@ -139,17 +139,6 @@ describe('App QA', () => {
     ).toBeTruthy();
   });
 
-  it('opens search from the header menu', () => {
-    render(<App />);
-
-    fireEvent.press(screen.getByLabelText('Ouvrir le menu'));
-    fireEvent.press(screen.getByLabelText('Rechercher'));
-
-    expect(
-      screen.getByPlaceholderText('Rechercher par numéro ou nom...')
-    ).toBeTruthy();
-  });
-
   it('opens legal information from the header menu', () => {
     render(<App />);
 

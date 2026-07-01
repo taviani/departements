@@ -4,9 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/AppStyles';
 
 const MENU_ITEMS = [
-  { id: 'search', label: 'Rechercher', icon: 'search' },
-  { id: 'list', label: 'Tous les départements', icon: 'list' },
-  { id: 'random', label: 'Département au hasard', icon: 'shuffle' },
+  { id: 'journey', label: 'Mon parcours', icon: 'map-outline' },
   { id: 'notifications', label: 'Notifications', icon: 'notifications-outline' },
   { id: 'help', label: 'Aide', icon: 'help-circle-outline' },
   { id: 'legal', label: 'Informations légales', icon: 'document-text' },
@@ -15,17 +13,13 @@ const MENU_ITEMS = [
 export default function AppMenu({
   visible,
   onClose,
-  onSearch,
-  onFullList,
-  onRandom,
+  onJourney,
   onNotifications,
   onHelp,
   onLegal,
 }) {
   const handlers = {
-    search: onSearch,
-    list: onFullList,
-    random: onRandom,
+    journey: onJourney,
     notifications: onNotifications,
     help: onHelp,
     legal: onLegal,
