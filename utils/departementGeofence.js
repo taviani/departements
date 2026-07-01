@@ -32,7 +32,7 @@ export const saveGeofenceState = async (state) => {
  */
 export const updateGeofenceState = (state, latitude, longitude, accuracy) => {
   if (accuracy != null && accuracy > 500) {
-    return { state, changedCode: null };
+    return { state, changedCode: null, previousCode: null };
   }
 
   const detectedCode = findDepartementCodeAt(latitude, longitude);
@@ -41,13 +41,13 @@ export const updateGeofenceState = (state, latitude, longitude, accuracy) => {
   if (!detectedCode) {
     next.pendingCode = null;
     next.pendingCount = 0;
-    return { state: next, changedCode: null };
+    return { state: next, changedCode: null, previousCode: null };
   }
 
   if (detectedCode === next.confirmedCode) {
     next.pendingCode = null;
     next.pendingCount = 0;
-    return { state: next, changedCode: null };
+    return { state: next, changedCode: null, previousCode: null };
   }
 
   if (detectedCode === next.pendingCode) {
@@ -58,18 +58,19 @@ export const updateGeofenceState = (state, latitude, longitude, accuracy) => {
   }
 
   if (next.pendingCount < DEPARTEMENT_CHANGE_STABLE_READINGS) {
-    return { state: next, changedCode: null };
+    return { state: next, changedCode: null, previousCode: null };
   }
 
+  const previousCode = next.confirmedCode;
   next.confirmedCode = detectedCode;
   next.pendingCode = null;
   next.pendingCount = 0;
-  return { state: next, changedCode: detectedCode };
+  return { state: next, changedCode: detectedCode, previousCode };
 };
 
 export const processLocationSample = async (latitude, longitude, accuracy) => {
   const current = await loadGeofenceState();
-  const { state, changedCode } = updateGeofenceState(
+  const { state, changedCode, previousCode } = updateGeofenceState(
     current,
     latitude,
     longitude,
@@ -83,5 +84,6 @@ export const processLocationSample = async (latitude, longitude, accuracy) => {
   return {
     currentDepartementCode: state.confirmedCode,
     changedDepartementCode: changedCode,
+    previousDepartementCode: changedCode ? previousCode : null,
   };
 };

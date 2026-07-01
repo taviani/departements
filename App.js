@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Keyboard,
   SafeAreaView,
   StatusBar,
+  Text,
   View,
 } from 'react-native';
+import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import AnimatedSplash from './components/AnimatedSplash';
@@ -16,10 +17,24 @@ import FranceMap from './components/FranceMap';
 import LegalInfoScreen from './components/LegalInfoScreen';
 import HelpScreen from './components/HelpScreen';
 import NotificationsScreen from './components/NotificationsScreen';
+import VisitJourneyScreen from './components/VisitJourneyScreen';
+import LocationRecommendationModal from './components/LocationRecommendationModal';
 import SearchOverlay from './components/SearchOverlay';
 import { useDepartementExplorer } from './hooks/useDepartementExplorer';
 import { useDepartementLocation } from './hooks/useDepartementLocation';
+import { useVisitHistory } from './hooks/useVisitHistory';
 import { useHorizontalSwipe } from './hooks/useHorizontalSwipe';
+import { visitHistoryCopy } from './constants/visitHistoryCopy';
+import {
+  canRecordVisitHistory,
+  getLocationPermissionLevel,
+} from './utils/locationPermissionLevel';
+import {
+  ensureAppLaunchCounted,
+  dismissLocationRecommendationForever,
+  getAppLaunchCount,
+  shouldShowLocationRecommendation,
+} from './utils/locationRecommendationStorage';
 import { ensureNotificationChannels } from './utils/notificationChannels';
 import { notifyDepartementChange } from './utils/departementGeofenceNotifications';
 import { styles } from './styles/AppStyles';
@@ -41,7 +56,11 @@ export default function App() {
   const [legalVisible, setLegalVisible] = useState(false);
   const [helpVisible, setHelpVisible] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
+  const [journeyVisible, setJourneyVisible] = useState(false);
+  const [locationRecommendationVisible, setLocationRecommendationVisible] =
+    useState(false);
   const location = useDepartementLocation();
+  const visitHistory = useVisitHistory({ visible: journeyVisible });
 
   const celebrateIfCurrentDepartement = useCallback(
     async (code) => {
@@ -93,11 +112,61 @@ export default function App() {
   useEffect(() => {
     SplashScreen.hideAsync().catch(() => {});
     ensureNotificationChannels().catch(() => {});
+    ensureAppLaunchCounted().catch(() => {});
   }, []);
 
   const handleSplashFinish = useCallback(() => {
     setSplashVisible(false);
   }, []);
+
+  useEffect(() => {
+    if (splashVisible) {
+      return;
+    }
+
+    let active = true;
+
+    const maybeShowRecommendation = async () => {
+      const [foreground, background, launchCount] = await Promise.all([
+        Location.getForegroundPermissionsAsync(),
+        Location.getBackgroundPermissionsAsync(),
+        getAppLaunchCount(),
+      ]);
+      const permissionLevel = getLocationPermissionLevel(
+        foreground.status,
+        background.status
+      );
+      const show = await shouldShowLocationRecommendation({
+        permissionLevel,
+        launchCount,
+      });
+      if (active && show) {
+        setLocationRecommendationVisible(true);
+      }
+    };
+
+    maybeShowRecommendation();
+
+    return () => {
+      active = false;
+    };
+  }, [splashVisible]);
+
+  const showMapHint = !canRecordVisitHistory(visitHistory.permissionLevel);
+
+  const mapVisitIntensity = useMemo(() => {
+    if (
+      !visitHistory.consent?.historyEnabled ||
+      !visitHistory.settings?.showVisitedOnMap
+    ) {
+      return undefined;
+    }
+    return visitHistory.visitIntensityByCode;
+  }, [
+    visitHistory.consent?.historyEnabled,
+    visitHistory.settings?.showVisitedOnMap,
+    visitHistory.visitIntensityByCode,
+  ]);
 
   const handleSwipeDown = useCallback(() => {
     location.resolveCurrentDepartementCode().then((code) => {
@@ -122,6 +191,9 @@ export default function App() {
             isDetailView={explorer.isDetailView}
             onMenuPress={() => setMenuVisible(true)}
           />
+          {showMapHint ? (
+            <Text style={styles.mapHint}>{visitHistoryCopy.mapHint}</Text>
+          ) : null}
         </SafeAreaView>
 
         <View style={styles.container}>
@@ -134,6 +206,7 @@ export default function App() {
                 selectedCode={explorer.selectedDepartement?.number}
                 detailCode={explorer.zoomedCode}
                 highlightedCodes={explorer.mapHighlightedCodes}
+                visitIntensityByCode={mapVisitIntensity}
                 onDepartmentPress={explorer.handleMapDepartmentPress}
                 onZoomChange={explorer.handleMapZoomChange}
               />
@@ -157,12 +230,18 @@ export default function App() {
       <AppMenu
         visible={menuVisible}
         onClose={() => setMenuVisible(false)}
-        onSearch={explorer.openSearchOverlay}
-        onFullList={explorer.openSearchWithFullList}
-        onRandom={explorer.handleRandomRefresh}
+        onJourney={() => setJourneyVisible(true)}
         onNotifications={() => setNotificationsVisible(true)}
         onHelp={() => setHelpVisible(true)}
         onLegal={() => setLegalVisible(true)}
+      />
+
+      <VisitJourneyScreen
+        visible={journeyVisible}
+        onClose={() => setJourneyVisible(false)}
+        onRequestLocationAccess={handleRequestLocationAccess}
+        onRefreshLocationTracking={location.refreshTracking}
+        visitHistory={visitHistory}
       />
 
       <NotificationsScreen
@@ -205,12 +284,27 @@ export default function App() {
 
       {splashVisible && <AnimatedSplash onFinish={handleSplashFinish} />}
 
-      {!splashVisible && location.matchCelebration && !notificationsVisible ? (
+      {!splashVisible && location.matchCelebration && !notificationsVisible && !journeyVisible ? (
         <MatchSplash
           departement={location.matchCelebration}
           onFinish={location.clearMatchCelebration}
         />
       ) : null}
+
+      <LocationRecommendationModal
+        visible={locationRecommendationVisible}
+        onLater={() => setLocationRecommendationVisible(false)}
+        onEnable={async () => {
+          setLocationRecommendationVisible(false);
+          await handleRequestLocationAccess();
+          await location.refreshTracking();
+          visitHistory.reload();
+        }}
+        onDismissForever={async () => {
+          setLocationRecommendationVisible(false);
+          await dismissLocationRecommendationForever();
+        }}
+      />
     </View>
   );
 }

@@ -2,11 +2,16 @@ import * as TaskManager from 'expo-task-manager';
 import {
   DEPARTEMENT_LOCATION_TASK,
 } from '../constants/locationConfig';
-import { loadNotificationSettings } from '../utils/notificationStorage';
 import { processLocationSample } from '../utils/departementGeofence';
 import { notifyDepartementChange } from '../utils/departementGeofenceNotifications';
+import {
+  shouldRecordVisitHistory,
+  shouldRunBackgroundGeofence,
+} from '../utils/geofenceTrackingPolicy';
+import { loadNotificationSettings } from '../utils/notificationStorage';
+import { handleVisitHistoryForLocationSample } from '../utils/visitHistory';
 
-TaskManager.defineTask(DEPARTEMENT_LOCATION_TASK, async ({ data, error }) => {
+const handleDepartementLocationTask = async ({ data, error }) => {
   if (error) {
     return;
   }
@@ -16,8 +21,12 @@ TaskManager.defineTask(DEPARTEMENT_LOCATION_TASK, async ({ data, error }) => {
     return;
   }
 
-  const settings = await loadNotificationSettings();
-  if (!settings.enabled || !settings.departementChanges) {
+  const [runBackground, recordHistory] = await Promise.all([
+    shouldRunBackgroundGeofence(),
+    shouldRecordVisitHistory(),
+  ]);
+
+  if (!runBackground && !recordHistory) {
     return;
   }
 
@@ -27,13 +36,35 @@ TaskManager.defineTask(DEPARTEMENT_LOCATION_TASK, async ({ data, error }) => {
     return;
   }
 
-  const { changedDepartementCode } = await processLocationSample(
+  const {
+    currentDepartementCode,
+    changedDepartementCode,
+    previousDepartementCode,
+  } = await processLocationSample(
     coords.latitude,
     coords.longitude,
     coords.accuracy
   );
 
-  if (changedDepartementCode) {
-    await notifyDepartementChange(changedDepartementCode);
+  if (recordHistory) {
+    await handleVisitHistoryForLocationSample({
+      currentDepartementCode,
+      changedDepartementCode,
+      previousDepartementCode,
+    });
   }
-});
+
+  if (changedDepartementCode) {
+    const settings = await loadNotificationSettings();
+    if (settings.enabled && settings.departementChanges) {
+      await notifyDepartementChange(changedDepartementCode);
+    }
+  }
+};
+
+if (!TaskManager.isTaskDefined(DEPARTEMENT_LOCATION_TASK)) {
+  TaskManager.defineTask(
+    DEPARTEMENT_LOCATION_TASK,
+    handleDepartementLocationTask
+  );
+}

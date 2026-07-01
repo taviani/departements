@@ -21,6 +21,7 @@ function FranceMap({
   selectedCode,
   highlightedCodes,
   detailCode,
+  visitIntensityByCode,
   onDepartmentPress,
   onZoomChange,
   style,
@@ -89,6 +90,30 @@ function FranceMap({
     return <Path d={selectedDept.path} fill={MAP_FILL.selected} />;
   }, [selectedDept]);
 
+  const visitedPaths = useMemo(() => {
+    if (!visitIntensityByCode || Object.keys(visitIntensityByCode).length === 0) {
+      return null;
+    }
+
+    return departments
+      .filter(
+        (dept) =>
+          visitIntensityByCode[dept.code] > 0 &&
+          dept.code !== selectedCode &&
+          !highlightedSet.has(dept.code)
+      )
+      .map((dept) => {
+        const level = visitIntensityByCode[dept.code];
+        return (
+          <Path
+            key={`visit-${dept.code}`}
+            d={dept.path}
+            fill={MAP_FILL.visited[level] ?? MAP_FILL.default}
+          />
+        );
+      });
+  }, [departments, highlightedSet, selectedCode, visitIntensityByCode]);
+
   const prefectureLabelPosition = useMemo(() => {
     if (
       !isZoomed ||
@@ -145,6 +170,7 @@ function FranceMap({
         <AnimatedG animatedProps={animatedGroupProps}>
           <G pointerEvents="none">
             <Path d={basePath} fill={MAP_FILL.default} />
+            {visitedPaths}
             {highlightPath}
             {selectedPath}
             {selectedDept && !isZoomed ? (
@@ -168,6 +194,7 @@ const propsAreEqual = (prev, next) =>
   prev.selectedCode === next.selectedCode &&
   prev.detailCode === next.detailCode &&
   prev.highlightedCodes === next.highlightedCodes &&
+  prev.visitIntensityByCode === next.visitIntensityByCode &&
   prev.style === next.style;
 
 export default memo(FranceMap, propsAreEqual);

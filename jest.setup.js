@@ -35,7 +35,12 @@ jest.mock('expo-location', () => ({
   getBackgroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
   requestForegroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
   requestBackgroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
-  watchPositionAsync: jest.fn(() => Promise.resolve({ remove: jest.fn() })),
+  getCurrentPositionAsync: jest.fn(() =>
+    Promise.resolve({
+      coords: { latitude: 48.8566, longitude: 2.3522, accuracy: 50 },
+    })
+  ),
+  getLastKnownPositionAsync: jest.fn(() => Promise.resolve(null)),
   hasStartedLocationUpdatesAsync: jest.fn(() => Promise.resolve(false)),
   startLocationUpdatesAsync: jest.fn(() => Promise.resolve()),
   stopLocationUpdatesAsync: jest.fn(() => Promise.resolve()),
@@ -43,6 +48,7 @@ jest.mock('expo-location', () => ({
 
 jest.mock('expo-task-manager', () => ({
   defineTask: jest.fn(),
+  isTaskDefined: jest.fn(() => false),
   isAvailableAsync: jest.fn(() => Promise.resolve(true)),
 }));
 
