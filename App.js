@@ -59,8 +59,10 @@ export default function App() {
   const [journeyVisible, setJourneyVisible] = useState(false);
   const [locationRecommendationVisible, setLocationRecommendationVisible] =
     useState(false);
-  const location = useDepartementLocation();
   const visitHistory = useVisitHistory({ visible: journeyVisible });
+  const location = useDepartementLocation({
+    onVisitHistoryUpdated: visitHistory.reload,
+  });
 
   const celebrateIfCurrentDepartement = useCallback(
     async (code) => {

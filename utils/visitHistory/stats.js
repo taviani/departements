@@ -21,14 +21,20 @@ export const isValidVisitSession = (session) => {
 export const computeVisitStats = (sessions = []) => {
   const safeSessions = Array.isArray(sessions) ? sessions : [];
   const validSessions = safeSessions.filter(isValidVisitSession);
+  const countableSessions = safeSessions.filter(
+    (session) => isValidVisitSession(session) || !session.exitedAt
+  );
   const visitedBuckets = new Set();
   const visitCountByCode = {};
   let totalPassages = 0;
 
-  for (const session of validSessions) {
+  for (const session of countableSessions) {
     visitedBuckets.add(progressBucket(session.departementCode));
     visitCountByCode[session.departementCode] =
       (visitCountByCode[session.departementCode] ?? 0) + 1;
+  }
+
+  for (const session of validSessions) {
     totalPassages += 1;
   }
 

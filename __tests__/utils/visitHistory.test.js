@@ -73,6 +73,22 @@ describe('visitHistory stats', () => {
     expect(isValidVisitSession(sessions[0])).toBe(false);
     expect(computeVisitStats(sessions).visitedCount).toBe(0);
   });
+
+  it('counts an ongoing session in visited count', () => {
+    const sessions = [
+      {
+        id: '1',
+        departementCode: '75',
+        enteredAt: minutesAgo(1),
+        exitedAt: null,
+        closedReason: null,
+      },
+    ];
+
+    const stats = computeVisitStats(sessions);
+    expect(stats.visitedCount).toBe(1);
+    expect(stats.totalPassages).toBe(0);
+  });
 });
 
 describe('visitHistory engine', () => {

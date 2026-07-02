@@ -59,7 +59,7 @@ const stopBackgroundUpdates = async () => {
   }
 };
 
-export function useDepartementLocation() {
+export function useDepartementLocation({ onVisitHistoryUpdated } = {}) {
   const [currentDepartementCode, setCurrentDepartementCode] = useState(null);
   const [locationPermission, setLocationPermission] = useState('undetermined');
   const [matchCelebration, setMatchCelebration] = useState(null);
@@ -110,11 +110,14 @@ export function useDepartementLocation() {
     setCurrentDepartementCode(code);
 
     try {
-      await handleVisitHistoryForLocationSample({
+      const recorded = await handleVisitHistoryForLocationSample({
         currentDepartementCode: code,
         changedDepartementCode,
         previousDepartementCode,
       });
+      if (recorded) {
+        await onVisitHistoryUpdated?.();
+      }
     } catch (error) {
       console.warn('Visit history recording failed:', error);
     }
@@ -131,7 +134,7 @@ export function useDepartementLocation() {
         console.warn('Department change notification failed:', error);
       }
     }
-  }, [refreshSettings, triggerMatchCelebration]);
+  }, [onVisitHistoryUpdated, refreshSettings, triggerMatchCelebration]);
 
   const stopWatching = useCallback(async () => {
     watchSessionRef.current += 1;
@@ -320,11 +323,14 @@ export function useDepartementLocation() {
       } = await processLocationSample(latitude, longitude, accuracy);
       setCurrentDepartementCode(code);
       try {
-        await handleVisitHistoryForLocationSample({
+        const recorded = await handleVisitHistoryForLocationSample({
           currentDepartementCode: code,
           changedDepartementCode,
           previousDepartementCode,
         });
+        if (recorded) {
+          await onVisitHistoryUpdated?.();
+        }
       } catch (error) {
         console.warn('Visit history recording failed:', error);
       }
@@ -332,7 +338,7 @@ export function useDepartementLocation() {
     } catch {
       return null;
     }
-  }, [currentDepartementCode, requestForegroundPermission]);
+  }, [currentDepartementCode, onVisitHistoryUpdated, requestForegroundPermission]);
 
   return {
     currentDepartementCode,
