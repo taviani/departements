@@ -1,17 +1,22 @@
 # Départements
 
-A React Native (Expo) app to explore the 96 metropolitan French départements — with an interactive map, search, and prefecture markers.
+A React Native (Expo) app to explore the 96 metropolitan French départements — interactive map, search, geolocation, and visit tracking.
 
 ## Features
 
 - **Interactive SVG map** — tap-to-select; tap the detail strip to zoom on a département
 - **Prefecture** — city dot on overview; readable label when zoomed
-- **Search** — swipe right to open search overlay; filter by number or name
-- **List & random** — full list in search overlay, or **swipe left** for a random département
+- **Search & random** — swipe right for search overlay; **swipe left** for a random département
 - **Detail strip** — name, number, and region for the selected département
+- **Geolocation** — current département on the map and in search; swipe down to focus on where you are
+- **Match celebration** — splash + sound when you discover a département (hasard, search, or GPS)
+- **Notifications** — optional alerts when you enter a new département (background location required)
+- **Mon parcours** — visit history with **X / 96** progress, map tints, and session log (GPS only, opt-in)
 - **Animated splash** — logo reveal on launch
 
-The list and map both cover metropolitan France (96 départements, including Corsica 2A/2B).
+The list and map cover metropolitan France (96 départements, including Corsica 2A/2B as one progress slot).
+
+Visit history rules: GPS-confirmed sessions only (not tap/search/random), Corse 2A+2B = 1/96, open session counts immediately in progress, validated passages require ≥ 2 min. See [docs/visit-history-spec.md](docs/visit-history-spec.md).
 
 ## Design principles
 
@@ -23,7 +28,9 @@ The list and map both cover metropolitan France (96 départements, including Cor
 
 - Node.js 20+
 - npm
-- **[Expo Go](https://expo.dev/go)** on your phone (SDK 54) for device testing — or press **`i`** for the iOS simulator
+- **[Expo Go](https://apps.apple.com/app/expo-go/id982107779)** on your phone (**SDK 54** from the App Store) — or press **`i`** for the iOS simulator
+
+> Expo Go on the App Store is still on SDK 54. For SDK 55+ dev or TestFlight Expo Go, see [DEPLOY-IPHONE.md](DEPLOY-IPHONE.md).
 
 ## Setup
 
@@ -191,23 +198,28 @@ Every push/PR runs the same scan in CI.
 ```
 departements/
 ├── App.js                      # Composition root
-├── hooks/                      # Selection + map camera state
+├── hooks/                      # Map explorer, geolocation, visit history
 ├── components/
-│   ├── FranceMap.js            # SVG map, detail-strip zoom, prefecture marker
+│   ├── FranceMap.js            # SVG map, detail-strip zoom, visit tints
+│   ├── VisitJourneyScreen.js   # Mon parcours (progress, consent, sessions)
 │   └── ...
+├── utils/
+│   ├── visitHistory/           # Sessions, stats, GPS engine
+│   └── ...                     # Map math, geofence, notifications
 ├── data/
 │   ├── departements.js         # List of 96 metropolitan départements
 │   ├── prefectures.json        # Prefecture coordinates (source)
 │   └── departements-map.compressed.js  # Gzip-compressed SVG overview
+├── docs/
+│   └── visit-history-spec.md   # Visit history product spec (P1)
 ├── scripts/
 │   ├── build-map-data.js       # GeoJSON → compressed overview map
 │   └── ensure-map-data.js      # Auto-build map data if missing
-├── utils/                      # Map math, projection, search
 ├── __tests__/
 └── .github/workflows/
 ```
 
-See also: [SECURITY.md](SECURITY.md)
+See also: [DEPLOY-IPHONE.md](DEPLOY-IPHONE.md) · [DEPLOY-DEV-CLIENT.md](DEPLOY-DEV-CLIENT.md) · [SECURITY.md](SECURITY.md)
 
 ## Map data
 
@@ -223,6 +235,8 @@ Raw `departements.geojson` is gitignored; run `npm run build:map-data` to fetch 
 
 - **Expo 54** + **React Native 0.81**
 - **react-native-svg** — vector map
+- **react-native-reanimated** — detail-strip zoom
+- **expo-location** / **expo-notifications** / **expo-av** — geofence, alerts, match sound
 - **Jest** + **Testing Library** — unit and component tests
 
 ## License
